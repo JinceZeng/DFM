@@ -17,6 +17,7 @@ CProductNewDlg::CProductNewDlg(CWnd* pParent /*=NULL*/)
 	m_pPageList.clear();            //记录各子对话框
 	m_nCurrentPage=0;               //当前显示页
 	m_rectPanel=CRect(0,0,0,0);     //子对话框的包围圈
+	bInfoWrited=FALSE;
 
 }
 
@@ -120,8 +121,9 @@ BOOL CProductNewDlg::OnInitDialog()
 	pStep3->ShowWindow(SW_HIDE);
 	m_pPageList.push_back(pStep3);
 
-	///////////////////////////////////////显示第一页
-	ShowPage(0);
+	///////////////////////////////////////如果信息没写入显示第一页否则显示第二页
+	if(!bInfoWrited) ShowPage(0);
+	else             {ShowPage(1);m_nCurrentPage+=1;}
 	UpdateWindow();
 
 

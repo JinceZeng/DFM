@@ -57,7 +57,7 @@ void CPInfoListCtrl::OnNMRClick(NMHDR *pNMHDR, LRESULT *pResult)
 			// you could do your own processing on nItem here
 		}
 		CString strIsEval;
-		strIsEval=GetItemText(m_nItem,5);
+		strIsEval=GetItemText(m_nItem,6);
 
 		CPoint pt=pNMItemActivate->ptAction;
 		CMenu menu;       // 菜单（包含主菜单栏和子菜单）   
@@ -115,9 +115,29 @@ void CPInfoListCtrl::OnMenuEvalin()
 {
 	// TODO: Add your command handler code here
 	CProductNewDlg dlg;
+	dlg.bInfoWrited=true;
 	dlg.DoModal();
-   //((CProductStep0Dlg*)dlg.m_pPageList[0])->m_ProductNum=GetItemText(m_nItem,1);
-   //((CProductStep0Dlg*)dlg.m_pPageList[0])->m_ProductName=GetItemText(m_nItem,2);
-   //((CProductStep0Dlg*)dlg.m_pPageList[0])->m_ProductSub=GetItemText(m_nItem,3);
-   //((CProductStep0Dlg*)dlg.m_pPageList[0])->m_TypeInfo=GetItemText(m_nItem,1);
+	//dlg.ShowPage(1);
+	CString str;
+	str=GetItemText(m_nItem,1);
+
+	_RecordsetPtr m_pRs;
+	CString sql = CString("select * from ProductInfo where ProductID=") + str ;
+	m_pRs = theApp.m_pConnect->Execute(_bstr_t(sql), NULL, adCmdText);
+	CString str1 = (CString)m_pRs->GetCollect("ProductNam");
+	CString str2 = (CString)m_pRs->GetCollect("ProductNum");
+	CString str3 = (CString)(m_pRs->GetCollect("ProductSub")); 
+
+	CString str44 =  m_pRs->GetCollect("EvalModelID");
+	int int4 = _ttoi(str44);
+
+	CString str5 = (CString)(m_pRs->GetCollect("EvalTypeIntro")); 
+	((CProductStep0Dlg*)dlg.m_pPageList[0])->m_ProductName=str1;
+	((CProductStep0Dlg*)dlg.m_pPageList[0])->m_ProductNum=str2;
+	((CProductStep0Dlg*)dlg.m_pPageList[0])->m_ProductSub=str3;
+	((CProductStep0Dlg*)dlg.m_pPageList[0])->m_EvalTypeVal=int4;
+	((CProductStep0Dlg*)dlg.m_pPageList[0])->m_TypeInfo=str5;
+
+	
+	//::SendMessage(((CProductStep0Dlg*)dlg.m_pPageList[0])->m_hWnd,WM_UPDATEDATA,FALSE,FALSE);
 }

@@ -174,13 +174,14 @@ BOOL CDFMDlg::OnInitDialog()
 	width1=rec1.Width();
 
 	m_ProductInfoList.InsertColumn(0,_T("序号"), LVCFMT_CENTER,width1/16);
-	m_ProductInfoList.InsertColumn(1,_T("产品编号"),LVCFMT_CENTER,width1/8);
-	m_ProductInfoList.InsertColumn(2,_T("产品名称"),LVCFMT_CENTER,width1/8);
-	m_ProductInfoList.InsertColumn(3,_T("隶属整件"),LVCFMT_CENTER,width1*3/16);
-	m_ProductInfoList.InsertColumn(4,_T("评价模型"),LVCFMT_CENTER,width1/8);
-	m_ProductInfoList.InsertColumn(5,_T("任务状态"),LVCFMT_CENTER,width1/8);
-	m_ProductInfoList.InsertColumn(6,_T("评价人"),LVCFMT_CENTER,width1/8);
-	m_ProductInfoList.InsertColumn(7,_T("评价时间"),LVCFMT_CENTER,width1/8);
+	m_ProductInfoList.InsertColumn(1,_T("ID"), LVCFMT_CENTER,width1/16);
+	m_ProductInfoList.InsertColumn(2,_T("产品编号"),LVCFMT_CENTER,width1/8);
+	m_ProductInfoList.InsertColumn(3,_T("产品名称"),LVCFMT_CENTER,width1/8);
+	m_ProductInfoList.InsertColumn(4,_T("隶属整件"),LVCFMT_CENTER,width1/8);
+	m_ProductInfoList.InsertColumn(5,_T("评价模型"),LVCFMT_CENTER,width1/8);
+	m_ProductInfoList.InsertColumn(6,_T("任务状态"),LVCFMT_CENTER,width1/8);
+	m_ProductInfoList.InsertColumn(7,_T("评价人"),LVCFMT_CENTER,width1/8);
+	m_ProductInfoList.InsertColumn(8,_T("评价时间"),LVCFMT_CENTER,width1/8);
 
 
 	INIT_EASYSIZE;
@@ -297,6 +298,7 @@ void CDFMDlg::UpdateListCtrl()
 	{
 		CString str0;
 		str0.Format(CString("%d"),n); //int转cstring
+		CString str8 = (m_pRs1->GetCollect("ProductID"));       //数据库中int型数据获取后不能加cstring强制转换
 		CString str1 = (CString)(m_pRs1->GetCollect("ProductNam"));
 		CString str2 = (CString)(m_pRs1->GetCollect("ProductNum"));
 		CString str3 = (CString)(m_pRs1->GetCollect("ProductSub")); 
@@ -321,13 +323,14 @@ void CDFMDlg::UpdateListCtrl()
 		CString str7 = (CString)(m_pRs1->GetCollect("EvalTime"));
 
 		m_ProductInfoList.InsertItem(n,str0);
-		m_ProductInfoList.SetItemText(n,1,str1);
-		m_ProductInfoList.SetItemText(n,2,str2);
-		m_ProductInfoList.SetItemText(n,3,str3);
-		m_ProductInfoList.SetItemText(n,4,str4);
-		m_ProductInfoList.SetItemText(n,5,str5);
-		m_ProductInfoList.SetItemText(n,6,str6);
-		m_ProductInfoList.SetItemText(n,7,str7);
+		m_ProductInfoList.SetItemText(n,1,str8);
+		m_ProductInfoList.SetItemText(n,2,str1);
+		m_ProductInfoList.SetItemText(n,3,str2);
+		m_ProductInfoList.SetItemText(n,4,str3);
+		m_ProductInfoList.SetItemText(n,5,str4);
+		m_ProductInfoList.SetItemText(n,6,str5);
+		m_ProductInfoList.SetItemText(n,7,str6);
+		m_ProductInfoList.SetItemText(n,8,str7);
 
 	    n++;
 		m_pRs1->MoveNext();
