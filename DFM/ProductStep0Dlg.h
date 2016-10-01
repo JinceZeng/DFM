@@ -1,7 +1,7 @@
 #pragma once
 #include "afxwin.h"
 
-#define WM_UPDATEDATA WM_USER+1    //更新对话框控价
+#define WM_UPDATEDATA WM_USER+1    //更新对话框控件
 
 // CProductStep0Dlg dialog
 
@@ -36,5 +36,5 @@ public:
 	DWORD OnWizardNext();       //可以检验并保存当前工作
 	DWORD OnWizardPrevious();   //可以检验上一步工作，不用保存
 
-	afx_msg LRESULT OnUpdateData(WPARAM wParam,LPARAM lParam);//更新控件信息
+	afx_msg LRESULT OnUpdateData(WPARAM wParam,LPARAM lParam);//自定义消息更新控件信息
 };

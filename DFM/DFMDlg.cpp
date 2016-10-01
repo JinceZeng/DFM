@@ -71,10 +71,12 @@ BEGIN_MESSAGE_MAP(CDFMDlg, CDialogEx)
 	ON_COMMAND(ID_MENU_PSW, &CDFMDlg::OnMenuPsw)
 	ON_WM_SIZE()
 	ON_COMMAND(ID_EVALNEW, &CDFMDlg::OnEvalnew)
+	ON_MESSAGE(WM_DELETEDATA,&CDFMDlg::OnDeleteData)
+	ON_MESSAGE(WM_UPDATELIST,&CDFMDlg::OnUpdateList)
 END_MESSAGE_MAP()
 
 
-//控件大小位置变化
+//控件大小位置变化(暂未使用此功能)
 BEGIN_EASYSIZE_MAP(CDFMDlg, CDialogEx) 
 	EASYSIZE(IDC_MODELNEW,ES_BORDER,ES_BORDER,IDC_EVALRESULT,ES_KEEPSIZE,ES_HCENTER) //此处根据自己需求 
 	EASYSIZE(IDC_EVALRESULT,IDC_MODELNEW,ES_BORDER,ES_BORDER,ES_KEEPSIZE,ES_HCENTER)
@@ -377,6 +379,26 @@ void CDFMDlg::OnMenuLogin()
 	}
 }
 
+
+
+LRESULT CDFMDlg::OnDeleteData(WPARAM wParam,LPARAM lParam)
+{
+	//m_ProductInfoList.DeleteItem(wParam);
+	CString str;
+	str=(char*)lParam;   //lparam转cstring
+	_RecordsetPtr m_pRs;
+	CString sql = CString("delete * from ProductInfo where ProductID=") + str;
+	m_pRs = theApp.m_pConnect->Execute(_bstr_t(sql), NULL, adCmdText);
+
+	UpdateListCtrl();
+	return 0;
+}
+
+LRESULT CDFMDlg::OnUpdateList(WPARAM wParam,LPARAM lParam)
+{
+	UpdateListCtrl();
+	return 0;
+}
 
 void CDFMDlg::OnMenuAbout()
 {

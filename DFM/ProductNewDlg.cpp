@@ -71,6 +71,28 @@ BOOL CProductNewDlg::OnInitDialog()
 
 	pStep0->Create(IDD_PRODUCTSTEP0_DLG,this);
 
+	if(bInfoWrited)//如果数据库中已经写入，直接进行初始化
+	{
+		_RecordsetPtr m_pRs;
+		CString sql = CString("select * from ProductInfo where ProductID=") + strProductID ;
+		m_pRs = theApp.m_pConnect->Execute(_bstr_t(sql), NULL, adCmdText);
+		CString str1 = (CString)m_pRs->GetCollect("ProductNam");
+		CString str2 = (CString)m_pRs->GetCollect("ProductNum");
+		CString str3 = (CString)(m_pRs->GetCollect("ProductSub")); 
+
+		CString str44 =  m_pRs->GetCollect("EvalModelID");
+		int int4 = _ttoi(str44);
+
+		CString str5 = (CString)(m_pRs->GetCollect("EvalTypeIntro")); 
+	    pStep0->m_ProductName=str1;
+	    pStep0->m_ProductNum=str2;
+		pStep0->m_ProductSub=str3;
+		pStep0->m_EvalTypeVal=int4;
+		pStep0->m_TypeInfo=str5;
+
+
+		::SendMessage(pStep0->m_hWnd,WM_UPDATEDATA,FALSE,FALSE);//更新控件信息
+	}
 	//显示
 	pStep0->MoveWindow(m_rectPanel);
 	pStep0->ShowWindow(SW_HIDE);
@@ -122,8 +144,8 @@ BOOL CProductNewDlg::OnInitDialog()
 	m_pPageList.push_back(pStep3);
 
 	///////////////////////////////////////如果信息没写入显示第一页否则显示第二页
-	if(!bInfoWrited) ShowPage(0);
-	else             {ShowPage(1);m_nCurrentPage+=1;}
+	/*if(!bInfoWrited)*/ ShowPage(0);
+	/*else             {ShowPage(1);m_nCurrentPage+=1;}*/
 	UpdateWindow();
 
 

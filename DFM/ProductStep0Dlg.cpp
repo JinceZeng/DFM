@@ -5,6 +5,7 @@
 #include "DFM.h"
 #include "ProductStep0Dlg.h"
 #include "afxdialogex.h"
+#include "ProductNewDlg.h"
 
 
 // CProductStep0Dlg dialog
@@ -59,7 +60,6 @@ BOOL CProductStep0Dlg::OnInitDialog()
 		m_cmbEvalType.AddString(str);
 		m_pRs->MoveNext();
 	}
-
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE

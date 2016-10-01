@@ -7,6 +7,10 @@
 #include "EasySize.h"
 #include "PInfoListCtrl.h"
 
+
+#define WM_DELETEDATA WM_USER+2    //删除某一条产品信息
+#define WM_UPDATELIST WM_USER+3    //刷新list
+
 // CDFMDlg 对话框
 class CDFMDlg : public CDialogEx
 {
@@ -49,8 +53,11 @@ public:
 	afx_msg void OnMenuLogin();//登录菜单
 	afx_msg void OnMenuAbout();//关于菜单
 	afx_msg void OnMenuPsw();  //修改密码菜单
-	
-	afx_msg void OnEvalnew();
+	afx_msg void OnEvalnew();  //新建评价
+
+	afx_msg LRESULT OnDeleteData(WPARAM wParam,LPARAM lParam);//自定义消息删除某一条产品信息
+	afx_msg LRESULT OnUpdateList(WPARAM wParam,LPARAM lParam);//自定义消息刷新list
+
 
 	CPInfoListCtrl m_ProductInfoList;
 	void ChangeStyle(CPInfoListCtrl &m_ListCtrl);//改变list风格

@@ -34,6 +34,7 @@ public:
 	vector<CDialogEx*> m_pPageList;   //记录各子对话框
 	int m_nCurrentPage;               //当前显示页
 	bool bInfoWrited;                 //产品信息是否已写入
+	CString strProductID;             //list获取的产品ID,此处为CString型
 	CRect m_rectPanel;                //子对话框的包围圈
 	void ShowPage(UINT nPos);         //显示nPos页面从0开始索引
 	void SetWizButton(UINT nPos);     //根据页面情况设置按钮状态

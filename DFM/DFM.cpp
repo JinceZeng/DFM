@@ -21,6 +21,7 @@ END_MESSAGE_MAP()
 // CDFMApp 构造
 
 CDFMApp::CDFMApp()
+	:pwd(_T("")),name(_T(""))
 {
 	// 支持重新启动管理器
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
