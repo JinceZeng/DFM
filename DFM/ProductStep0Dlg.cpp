@@ -54,10 +54,12 @@ BOOL CProductStep0Dlg::OnInitDialog()
 	//初始化下拉菜单
 	CString sql = CString("select * from EvalModelInfo");
 	m_pRs = theApp.m_pConnect->Execute(_bstr_t(sql), NULL, adCmdText);
+	int i=0;
 	while (!m_pRs->adoEOF)
 	{
 		CString str = (CString)(m_pRs->GetCollect("EvalModelNam")); 
-		m_cmbEvalType.AddString(str);
+		m_cmbEvalType.InsertString(i,str);
+		i++;
 		m_pRs->MoveNext();
 	}
 
@@ -87,8 +89,14 @@ DWORD CProductStep0Dlg::OnWizardNext()
 		AfxMessageBox(CString("请先完成产品信息输入"));
 		return -1;
 	}
+	str_EvalType=(CString)(char *)(_bstr_t)(m_EvalTypeVal+1);//int转Cstring
+	CTime time;
+	time = CTime::GetCurrentTime();
+	CString str_Time = time.Format("%Y-%m-%d %H:%M:%S");
+	CString str_IsEval;
+	str_IsEval=(CString)(char *)(_bstr_t)(m_isEval);
 	//遍历数据库避免保存相同产品信息
-	CString sql=CString("select * from ProductInfo where ProductNam ='")+m_ProductName+CString("' and ProductNum='")+m_ProductNum+"'";
+	CString sql=CString("select * from ProductInfo where ProductNam ='")+m_ProductName+CString("' and ProductSub='")+m_ProductSub+CString("'and EvalModelID=")+str_EvalType;
 	m_pRs = theApp.m_pConnect->Execute(_bstr_t(sql), NULL, adCmdText);
 	int nCount=0;
 	while (!m_pRs->adoEOF)
@@ -99,19 +107,14 @@ DWORD CProductStep0Dlg::OnWizardNext()
 	}
 	if(nCount>0){
 		AfxMessageBox(CString("数据库已存在此产品信息"));
+		SaveProductInfo();
 		ShowWindow(SW_HIDE);
 		return 0;
 	}
 	//若没有重复信息，则将产品信息插入数据库中(access插入数据注意设置字段索引可重复)
 	else
 	{
-		CTime time;
-		time = CTime::GetCurrentTime();
-		CString str_Time = time.Format("%Y-%m-%d %H:%M:%S");
-		CString str_EvalType;
-		str_EvalType=(CString)(char *)(_bstr_t)(m_EvalTypeVal+1);
-		CString str,str_IsEval;
-		str_IsEval=(CString)(char *)(_bstr_t)(m_isEval);
+
 		//str_IsEval=m_ProductName+CString("_")+str;
 		try
 		{
@@ -133,11 +136,13 @@ DWORD CProductStep0Dlg::OnWizardNext()
 		//m_EvalTypeVal=-1;
 		//m_TypeInfo="";
 		//UpdateData(false);
+		SaveProductInfo();   //保存信息
 		AfxMessageBox(CString("新建评分保存成功"));
 
 		ShowWindow(SW_HIDE);
 		return 0;
 	}
+
 }
 
 //可以检验上一步工作（不会被调用）
@@ -152,4 +157,14 @@ LRESULT CProductStep0Dlg::OnUpdateData(WPARAM wParam,LPARAM lParam)
 {
 	UpdateData(wParam);
 	return 0;
+}
+
+void CProductStep0Dlg::SaveProductInfo()
+{
+	m_ProductInfo.m_ProductName=m_ProductName;
+	m_ProductInfo.m_ProductNum=m_ProductNum;
+	m_ProductInfo.m_ProductSub=m_ProductSub;
+	m_ProductInfo.str_EvalType=str_EvalType;
+	m_ProductInfo.m_TypeInfo=m_TypeInfo;
+	m_ProductInfo.m_isEval=m_isEval;
 }

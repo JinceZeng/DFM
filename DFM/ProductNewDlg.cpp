@@ -81,16 +81,17 @@ BOOL CProductNewDlg::OnInitDialog()
 		CString str3 = (CString)(m_pRs->GetCollect("ProductSub")); 
 
 		CString str44 =  m_pRs->GetCollect("EvalModelID");
-		int int4 = _ttoi(str44);
+		int int4 = _ttoi(str44)-1; //combo从零开始-1
 
 		CString str5 = (CString)(m_pRs->GetCollect("EvalTypeIntro")); 
 	    pStep0->m_ProductName=str1;
 	    pStep0->m_ProductNum=str2;
 		pStep0->m_ProductSub=str3;
+		pStep0->str_EvalType=str44;
 		pStep0->m_EvalTypeVal=int4;
 		pStep0->m_TypeInfo=str5;
 
-
+		pStep0->SaveProductInfo();//保存产品数据
 		::SendMessage(pStep0->m_hWnd,WM_UPDATEDATA,FALSE,FALSE);//更新控件信息
 	}
 	//显示
@@ -265,7 +266,11 @@ void CProductNewDlg::ShowPage(UINT nPos)
 		case 0:
 			if(((CProductStep0Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)  //保存当前工作不成功继续当前页
 				return;
+			//((CProductStep1Dlg*)m_pPageList[nPos])->m_ProductInfo=((CProductStep0Dlg*)m_pPageList[m_nCurrentPage])->m_ProductInfo;
+			((CProductStep1Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[m_nCurrentPage])->m_ProductInfo);
+			((CProductStep1Dlg*)m_pPageList[nPos])->ShowListCtrl(((CProductStep1Dlg*)m_pPageList[nPos])->m_Lvl4TechID);
 			((CProductStep1Dlg*)m_pPageList[nPos])->OnWizardActive();
+
 			break;
 		case 1:
 			if(((CProductStep1Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)

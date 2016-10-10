@@ -316,7 +316,7 @@ void CDFMDlg::UpdateListCtrl()
 		CString str5;
 		CString str55;
 		str55 = m_pRs1->GetCollect("IsEval");
-		int i = _ttoi(str55);
+		int i = _ttoi(str55);                //cstring转int  
 		//int i=atoi((char *)(_bstr_t)str55);//cstring转int
 		if(i==0) str5=CString("进行中");
 		else     str5=CString("已发布");
@@ -383,9 +383,8 @@ void CDFMDlg::OnMenuLogin()
 
 LRESULT CDFMDlg::OnDeleteData(WPARAM wParam,LPARAM lParam)
 {
-	//m_ProductInfoList.DeleteItem(wParam);
-	CString str;
-	str=(char*)lParam;   //lparam转cstring
+	m_ProductInfoList.DeleteItem(wParam);
+	CString str((TCHAR*)lParam);   //lparam转cstring(此处必须用tchar,char会导致精度损耗)
 	_RecordsetPtr m_pRs;
 	CString sql = CString("delete * from ProductInfo where ProductID=") + str;
 	m_pRs = theApp.m_pConnect->Execute(_bstr_t(sql), NULL, adCmdText);
