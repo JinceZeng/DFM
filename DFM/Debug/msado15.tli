@@ -1,9 +1,9 @@
-﻿// Created by Microsoft (R) C/C++ Compiler Version 10.00.40219.01 (d447d105).
+﻿// Created by Microsoft (R) C/C++ Compiler Version 10.00.40219.01 (a861357c).
 //
 // c:\users\jince\desktop\可制造性评价\dfm\dfm\debug\msado15.tli
 //
-// Wrapper implementations for type library C:\\Program Files\\Common Files\\System\\ado\\msado15.dll
-// compiler-generated file created 10/01/16 at 16:25:08 - DO NOT EDIT!
+// Wrapper implementations for type library C:\Program Files\Common Files\System\ADO\msado15.dll
+// compiler-generated file created 10/11/16 at 10:55:42 - DO NOT EDIT!
 
 #pragma once
 
@@ -2135,9 +2135,9 @@ inline _variant_t Recordset15::GetActiveConnection ( ) {
     return _variant_t(_result, false);
 }
 
-inline VARIANT_BOOL Recordset15::GetBOF ( ) {
+inline VARIANT_BOOL Recordset15::GetadoBOF ( ) {
     VARIANT_BOOL _result = 0;
-    HRESULT _hr = get_BOF(&_result);
+    HRESULT _hr = get_adoBOF(&_result);
     if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
     return _result;
 }
@@ -3132,9 +3132,9 @@ inline _variant_t Recordset15_Deprecated::GetActiveConnection ( ) {
     return _variant_t(_result, false);
 }
 
-inline VARIANT_BOOL Recordset15_Deprecated::GetBOF ( ) {
+inline VARIANT_BOOL Recordset15_Deprecated::GetadoBOF ( ) {
     VARIANT_BOOL _result = 0;
-    HRESULT _hr = get_BOF(&_result);
+    HRESULT _hr = get_adoBOF(&_result);
     if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
     return _result;
 }

@@ -267,6 +267,7 @@ void CProductNewDlg::ShowPage(UINT nPos)
 			if(((CProductStep0Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)  //保存当前工作不成功继续当前页
 				return;
 			//((CProductStep1Dlg*)m_pPageList[nPos])->m_ProductInfo=((CProductStep0Dlg*)m_pPageList[m_nCurrentPage])->m_ProductInfo;
+			((CProductStep1Dlg*)m_pPageList[nPos])->m_TechValList.DeleteAllItems();
 			((CProductStep1Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[m_nCurrentPage])->m_ProductInfo);
 			((CProductStep1Dlg*)m_pPageList[nPos])->ShowListCtrl(((CProductStep1Dlg*)m_pPageList[nPos])->m_Lvl4TechID);
 			((CProductStep1Dlg*)m_pPageList[nPos])->OnWizardActive();

@@ -57,7 +57,7 @@ BOOL CDFMApp::InitInstance()
 		if (SUCCEEDED(hr))
 		{
 			m_pConnect->ConnectionTimeout = 3;
-			hr = m_pConnect->Open("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=D:\DFM.accdb", "", "", adModeUnknown);
+			hr = m_pConnect->Open("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=DFM.accdb", "", "", adModeUnknown);
 		}
 	}
 	catch (_com_error e)

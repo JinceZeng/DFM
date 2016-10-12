@@ -387,7 +387,17 @@ LRESULT CDFMDlg::OnDeleteData(WPARAM wParam,LPARAM lParam)
 	CString str((TCHAR*)lParam);   //lparam转cstring(此处必须用tchar,char会导致精度损耗)
 	_RecordsetPtr m_pRs;
 	CString sql = CString("delete * from ProductInfo where ProductID=") + str;
-	m_pRs = theApp.m_pConnect->Execute(_bstr_t(sql), NULL, adCmdText);
+	try
+	{
+		m_pRs = theApp.m_pConnect->Execute(_bstr_t(sql), NULL, adCmdText);
+		AfxMessageBox(CString("产品信息删除成功"));
+	}
+	catch(_com_error &e)
+	{        
+		CString temp;
+		temp.Format(e.Description());
+		AfxMessageBox(temp);
+	}
 
 	UpdateListCtrl();
 	return 0;

@@ -1,9 +1,9 @@
-﻿// Created by Microsoft (R) C/C++ Compiler Version 10.00.40219.01 (d447d105).
+﻿// Created by Microsoft (R) C/C++ Compiler Version 10.00.40219.01 (a861357c).
 //
 // c:\users\jince\desktop\可制造性评价\dfm\dfm\debug\msado15.tlh
 //
-// C++ source equivalent of type library C:\\Program Files\\Common Files\\System\\ado\\msado15.dll
-// compiler-generated file created 10/01/16 at 16:25:08 - DO NOT EDIT!
+// C++ source equivalent of type library C:\Program Files\Common Files\System\ADO\msado15.dll
+// compiler-generated file created 10/11/16 at 10:55:42 - DO NOT EDIT!
 
 #pragma once
 #pragma pack(push, 8)
@@ -3113,8 +3113,8 @@ Recordset15 : _ADO
     _bstr_t Sort;
     __declspec(property(get=GetAbsolutePosition,put=PutAbsolutePosition))
     enum PositionEnum AbsolutePosition;
-    __declspec(property(get=GetBOF))
-    VARIANT_BOOL BOF;
+    __declspec(property(get=GetadoBOF))
+    VARIANT_BOOL adoBOF;
     __declspec(property(get=GetBookmark,put=PutBookmark))
     _variant_t Bookmark;
     __declspec(property(get=GetCacheSize,put=PutCacheSize))
@@ -3144,7 +3144,7 @@ Recordset15 : _ADO
     void PutActiveConnection (
         const _variant_t & pvar );
     _variant_t GetActiveConnection ( );
-    VARIANT_BOOL GetBOF ( );
+    VARIANT_BOOL GetadoBOF ( );
     _variant_t GetBookmark ( );
     void PutBookmark (
         const _variant_t & pvBookmark );
@@ -3255,7 +3255,7 @@ Recordset15 : _ADO
         /*[in]*/ VARIANT pvar ) = 0;
       virtual HRESULT __stdcall get_ActiveConnection (
         /*[out,retval]*/ VARIANT * pvar ) = 0;
-      virtual HRESULT __stdcall get_BOF (
+      virtual HRESULT __stdcall get_adoBOF (
         /*[out,retval]*/ VARIANT_BOOL * pb ) = 0;
       virtual HRESULT __stdcall get_Bookmark (
         /*[out,retval]*/ VARIANT * pvBookmark ) = 0;
@@ -4186,8 +4186,8 @@ Recordset15_Deprecated : _ADO
     _bstr_t Sort;
     __declspec(property(get=GetAbsolutePosition,put=PutAbsolutePosition))
     PositionEnum_Param AbsolutePosition;
-    __declspec(property(get=GetBOF))
-    VARIANT_BOOL BOF;
+    __declspec(property(get=GetadoBOF))
+    VARIANT_BOOL adoBOF;
     __declspec(property(get=GetBookmark,put=PutBookmark))
     _variant_t Bookmark;
     __declspec(property(get=GetCacheSize,put=PutCacheSize))
@@ -4217,7 +4217,7 @@ Recordset15_Deprecated : _ADO
     void PutActiveConnection (
         const _variant_t & pvar );
     _variant_t GetActiveConnection ( );
-    VARIANT_BOOL GetBOF ( );
+    VARIANT_BOOL GetadoBOF ( );
     _variant_t GetBookmark ( );
     void PutBookmark (
         const _variant_t & pvBookmark );
@@ -4328,7 +4328,7 @@ Recordset15_Deprecated : _ADO
         /*[in]*/ VARIANT pvar ) = 0;
       virtual HRESULT __stdcall get_ActiveConnection (
         /*[out,retval]*/ VARIANT * pvar ) = 0;
-      virtual HRESULT __stdcall get_BOF (
+      virtual HRESULT __stdcall get_adoBOF (
         /*[out,retval]*/ VARIANT_BOOL * pb ) = 0;
       virtual HRESULT __stdcall get_Bookmark (
         /*[out,retval]*/ VARIANT * pvBookmark ) = 0;
