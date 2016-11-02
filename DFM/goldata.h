@@ -26,10 +26,9 @@ struct CProductInfo //产品信息
 struct CTechChartItem //工艺表的每条数据
 {
 	CString nItem;                  //序号
-	CString m_ChooseTech;           //采用工艺
-	CString m_ReqClassify;          //要求分类
+	CString m_Classify;             //类别
 	CString m_TechEvalIndex;        //工艺评价指标
 	vector<CString> m_ValComboStr;  //评分下拉菜单对应的所有字符
-	CString m_IndexWeigh;           //指标权重
+	CString m_IndexScore;           //指标得分
 
 };

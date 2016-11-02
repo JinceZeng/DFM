@@ -66,13 +66,14 @@ BEGIN_MESSAGE_MAP(CDFMDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_WM_SIZE()
 	ON_COMMAND(ID_MENU_LOGIN, &CDFMDlg::OnMenuLogin)
 	ON_COMMAND(ID_MENU_ABOUT, &CDFMDlg::OnMenuAbout)
 	ON_COMMAND(ID_MENU_PSW, &CDFMDlg::OnMenuPsw)
-	ON_WM_SIZE()
 	ON_COMMAND(ID_EVALNEW, &CDFMDlg::OnEvalnew)
 	ON_MESSAGE(WM_DELETEDATA,&CDFMDlg::OnDeleteData)
 	ON_MESSAGE(WM_UPDATELIST,&CDFMDlg::OnUpdateList)
+	ON_COMMAND(IDC_MODELNEW, &CDFMDlg::OnEvalnew)//新建评分按钮相应
 END_MESSAGE_MAP()
 
 
@@ -158,7 +159,7 @@ BOOL CDFMDlg::OnInitDialog()
 	m_Statusbar.SetPaneText(2,str2);
 
 
-    //菜单项初始化
+    //菜单项初始化变灰操作
 	CMenu *pMenu = GetMenu();
 	pMenu->GetSubMenu(1)->EnableMenuItem(0, MF_BYPOSITION | MF_GRAYED);
 	pMenu->GetSubMenu(1)->EnableMenuItem(1, MF_BYPOSITION | MF_GRAYED);
@@ -167,6 +168,11 @@ BOOL CDFMDlg::OnInitDialog()
 	pMenu->GetSubMenu(3)->EnableMenuItem(0, MF_BYPOSITION | MF_GRAYED);
 	pMenu->GetSubMenu(3)->EnableMenuItem(1, MF_BYPOSITION | MF_GRAYED);
 	pMenu->GetSubMenu(4)->EnableMenuItem(0, MF_BYPOSITION | MF_GRAYED);
+	//pMenu->Detach();
+	//DrawMenuBar();    //更新菜单显示
+	//按钮变灰
+	GetDlgItem(IDC_MODELNEW)->EnableWindow(FALSE);
+	GetDlgItem(IDC_EVALRESULT)->EnableWindow(FALSE);
 
 	ChangeStyle(m_ProductInfoList);//list风格改变
 	//将列表控件先初始化,插入表头
@@ -241,7 +247,7 @@ HCURSOR CDFMDlg::OnQueryDragIcon()
 }
 
 
-//响应窗口大小变化
+//响应窗口大小变化（暂未使用）
 void CDFMDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialogEx::OnSize(nType, cx, cy);
@@ -370,6 +376,10 @@ void CDFMDlg::OnMenuLogin()
 			pMenu->GetSubMenu(4)->EnableMenuItem(0, MF_BYPOSITION | MF_ENABLED);
 			pMenu->EnableMenuItem(0,MF_BYPOSITION | MF_GRAYED);
 			AfxGetMainWnd()->DrawMenuBar();    //更新菜单显示
+
+			//更新按钮
+			GetDlgItem(IDC_MODELNEW)->EnableWindow(true);
+			GetDlgItem(IDC_EVALRESULT)->EnableWindow(true);
 		}
 		m_Statusbar.SetPaneText(1, CString("当前用户: ") + theApp.name);
 		SetWindowText(CString("可制造性评价      当前登录用户: ") + theApp.name);
@@ -433,3 +443,4 @@ void CDFMDlg::OnEvalnew()
 	CProductNewDlg dlg;
 	dlg.DoModal();
 }
+

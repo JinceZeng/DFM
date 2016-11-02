@@ -7,7 +7,11 @@ using std::vector;
 #include "ProductStep1Dlg.h"
 #include "ProductStep2Dlg.h"
 #include "ProductStep3Dlg.h"
+#include "ProductStep4Dlg.h"
+#include "ProductStep5Dlg.h"
+#include "ProductStep6Dlg.h"
 #include "ProductOutDlg.h"
+#include "btnst.h"
 
 // CProductNewDlg dialog
 
@@ -38,8 +42,19 @@ public:
 	CRect m_rectPanel;                //子对话框的包围圈
 	void ShowPage(UINT nPos);         //显示nPos页面从0开始索引
 	void SetWizButton(UINT nPos);     //根据页面情况设置按钮状态
+	CButton* NewMyButton(int nID,CRect rect,int nStyle);//动态创建Button控件
 	void SetTextShow(UINT nPos);      //根据页面情况设置文本显示 
 	afx_msg void OnBnClickedEvalpre();   //前一步
 	afx_msg void OnBnClickedEvalnext();  //下一步
 	afx_msg void OnBnClickedEvalin();    //进入评价
+
+	//状态显示
+	CStatic *m_csCaption;
+	CButtonST m_btnChart0;
+	CButtonST m_btnChart1;
+	CButtonST m_btnChart2;
+	CButtonST m_btnChart3;
+	CButtonST m_btnChart4;
+	CButtonST m_btnChart5;
+	CButtonST m_btnChart6;
 };

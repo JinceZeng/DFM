@@ -49,13 +49,14 @@ public:
 
 protected:
 	CFont m_font;
-
+    bool bMatching;    //匹配中
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnCbnSelchange();                         //结束编辑
-	void InitCombo(vector<CString>& lisStr);              //初始化组合框列表,动态变化是个麻烦事
+	void InitCombo(vector<CString>& lisStr);               //初始化组合框列表,动态变化是个麻烦事
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	//afx_msg void OnCbnKillfocus();                         //失去焦点后结束编辑
 };
 
 
@@ -79,13 +80,15 @@ protected:
 public:
 	BOOL m_bEditing;            //是否有表项正在编辑
 protected:
-	CMyEdit1 m_edit;             //编辑控件
-	CMyCombo1 m_ComboBox;        //1   组合框
+	CMyEdit1  m_edit;             //编辑控件
+	CMyCombo1 m_ComboBox;        //组合框
 	int m_nItem;                //编辑表项的行号
 	int m_nSubItem;             //编辑表项的列号
 
-	//组合框对应的列
-	vector<int> m_nlisCombo;               //2  记录组合框对应的列(方便编辑)
+
+	//_RecordsetPtr m_pRs,m_pRs1;         
+	vector<int> m_nlisCombo;               //录组合框对应的列(方便编辑)
+	bool isCombo;                          //进一步判断是否需要下拉
 	vector<int> m_nNoEdit;                 //记录不可编辑项
 	vector<vector<CString>> m_strlisCombo;         //存储组合框所包含的字符串   
 

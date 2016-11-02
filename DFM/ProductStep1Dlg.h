@@ -27,13 +27,12 @@ public:
 public:
 	virtual BOOL OnInitDialog();
 	CTechValListCtrl m_TechValList;            //listctrl控制变量
-    //CProductInfo m_ProductInfo;                //获取上一页中信息
 	vector<CString> m_Lvl3TechID;              //第三层工艺指标ID
-	vector<vector<CString>> m_Lvl4TechID;      //第三层指标对应的第四层指标ID
-	vector<vector<CString>> m_Lvl4TechWeight;  //第四层指标权重
+	//vector<vector<CString>> m_Lvl4TechID;      //第三层指标对应的第四层指标ID
+	//vector<vector<CString>> m_Lvl4TechWeight;  //第四层指标权重
 	vector<CTechChartItem> m_ListCtrlItem;     //存储List条目
 	void ReadTechChart(CProductInfo &m_ProductInfo);                      //读取工艺表
-	void ShowListCtrl(vector<vector<CString>> &m_Lvl4TechID);     //显示评分表
+	void ShowListCtrl();                         //显示评分表
 	void SetListItem(vector<CTechChartItem> &m_ListCtrlItem);     //设置list条目
 
 	BOOL m_bLegal;                                    //检测合理性问题

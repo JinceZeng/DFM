@@ -1,12 +1,6 @@
 #pragma once
 #include "afxcmn.h"
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <string>
 #include "TechValListCtrl.h"
-#import "C:\Program Files\Common Files\System\ADO\msado15.dll" no_namespace rename("EOF", "adoEOF") rename("BOF", "adoBOF")
-using namespace std;
 
 // CProductStep2Dlg dialog
 

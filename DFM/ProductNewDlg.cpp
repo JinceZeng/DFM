@@ -31,11 +31,20 @@ CProductNewDlg::~CProductNewDlg()
 	}
 
 	m_pPageList.clear();            //记录各子对话框
+
+	delete m_csCaption;             //释放cstatic指针内存
 }
 
 void CProductNewDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_BUTTON_CHART0, m_btnChart0);
+	DDX_Control(pDX, IDC_BUTTON_CHART1, m_btnChart1);
+	DDX_Control(pDX, IDC_BUTTON_CHART2, m_btnChart2);
+	DDX_Control(pDX, IDC_BUTTON_CHART3, m_btnChart3);
+	DDX_Control(pDX, IDC_BUTTON_CHART4, m_btnChart4);
+	DDX_Control(pDX, IDC_BUTTON_CHART5, m_btnChart5);
+	DDX_Control(pDX, IDC_BUTTON_CHART6, m_btnChart6);
 }
 
 
@@ -144,11 +153,70 @@ BOOL CProductNewDlg::OnInitDialog()
 	pStep3->ShowWindow(SW_HIDE);
 	m_pPageList.push_back(pStep3);
 
-	///////////////////////////////////////如果信息没写入显示第一页否则显示第二页
-	/*if(!bInfoWrited)*/ ShowPage(0);
-	/*else             {ShowPage(1);m_nCurrentPage+=1;}*/
+	////////////////////////////////////////页面4
+	CProductStep4Dlg *pStep4=new CProductStep4Dlg();
+	if(pStep4==NULL)
+	{
+		MessageBox(_T("页面3创建失败"));
+		AfxAbort();
+	}
+
+	pStep4->Create(IDD_PRODUCTSTEP4_DLG,this);
+
+	//显示
+	pStep4->MoveWindow(m_rectPanel);
+	pStep4->ShowWindow(SW_HIDE);
+	m_pPageList.push_back(pStep4);
+
+	////////////////////////////////////////页面5
+	CProductStep5Dlg *pStep5=new CProductStep5Dlg();
+	if(pStep5==NULL)
+	{
+		MessageBox(_T("页面3创建失败"));
+		AfxAbort();
+	}
+
+	pStep5->Create(IDD_PRODUCTSTEP5_DLG,this);
+
+	//显示
+	pStep5->MoveWindow(m_rectPanel);
+	pStep5->ShowWindow(SW_HIDE);
+	m_pPageList.push_back(pStep5);
+
+	////////////////////////////////////////页面6
+	CProductStep6Dlg *pStep6=new CProductStep6Dlg();
+	if(pStep6==NULL)
+	{
+		MessageBox(_T("页面3创建失败"));
+		AfxAbort();
+	}
+
+	pStep6->Create(IDD_PRODUCTSTEP6_DLG,this);
+
+	//显示
+	pStep6->MoveWindow(m_rectPanel);
+	pStep6->ShowWindow(SW_HIDE);
+	m_pPageList.push_back(pStep6);
+
+
+	///////////////////////////////////////显示第一页
+	ShowPage(0);
 	UpdateWindow();
 
+
+
+	//////////////////////////////////////状态显示初始化
+	m_csCaption=new CStatic();
+	m_csCaption->Create(CString("可制造性评价"),WS_CHILD|WS_VISIBLE|SS_CENTER,CRect(20,30,130,50),this);
+
+	short	shBtnColor = 30;
+	m_btnChart0.OffsetColor(CButtonST::BTNST_COLOR_BK_IN, shBtnColor);
+	m_btnChart1.OffsetColor(CButtonST::BTNST_COLOR_BK_IN, shBtnColor);
+	m_btnChart2.OffsetColor(CButtonST::BTNST_COLOR_BK_IN, shBtnColor);
+	m_btnChart3.OffsetColor(CButtonST::BTNST_COLOR_BK_IN, shBtnColor);
+	m_btnChart4.OffsetColor(CButtonST::BTNST_COLOR_BK_IN, shBtnColor);
+	m_btnChart5.OffsetColor(CButtonST::BTNST_COLOR_BK_IN, shBtnColor);
+	m_btnChart6.OffsetColor(CButtonST::BTNST_COLOR_BK_IN, shBtnColor);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -175,7 +243,7 @@ HBRUSH CProductNewDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		CFont font;
 		font.CreatePointFont(125,_T("隶书"));    //设置字体背景
 		pDC->SelectObject(&font);
-		pDC->SetTextColor(RGB(255,0,0));
+		pDC->SetTextColor(RGB(0,0,0));
 		pDC->SetBkMode(TRANSPARENT);
 	}
 	// TODO:  Return a different brush if the default is not desired
@@ -240,7 +308,16 @@ void CProductNewDlg::SetWizButton(UINT nPos)
 	case 2://中间步
 		GetDlgItem(IDC_EVALIN)->EnableWindow(FALSE);
 		break;
-	case 3: //最后一步
+	case 3://中间步
+		GetDlgItem(IDC_EVALIN)->EnableWindow(FALSE);
+		break;
+	case 4://中间步
+		GetDlgItem(IDC_EVALIN)->EnableWindow(FALSE);
+		break;
+	case 5://中间步
+		GetDlgItem(IDC_EVALIN)->EnableWindow(FALSE);
+		break;
+	case 6: //最后一步
 		GetDlgItem(IDC_EVALNEXT)->EnableWindow(FALSE);
 		break;
 	}
@@ -266,10 +343,9 @@ void CProductNewDlg::ShowPage(UINT nPos)
 		case 0:
 			if(((CProductStep0Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)  //保存当前工作不成功继续当前页
 				return;
-			//((CProductStep1Dlg*)m_pPageList[nPos])->m_ProductInfo=((CProductStep0Dlg*)m_pPageList[m_nCurrentPage])->m_ProductInfo;
 			((CProductStep1Dlg*)m_pPageList[nPos])->m_TechValList.DeleteAllItems();
 			((CProductStep1Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[m_nCurrentPage])->m_ProductInfo);
-			((CProductStep1Dlg*)m_pPageList[nPos])->ShowListCtrl(((CProductStep1Dlg*)m_pPageList[nPos])->m_Lvl4TechID);
+			((CProductStep1Dlg*)m_pPageList[nPos])->ShowListCtrl();
 			((CProductStep1Dlg*)m_pPageList[nPos])->OnWizardActive();
 
 			break;
@@ -282,8 +358,22 @@ void CProductNewDlg::ShowPage(UINT nPos)
 		case 2:
 			if(((CProductStep2Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)
 				return;
-			//((CDlgStep3*)m_pPageList[nPos])->GetExternInfo(((CDlgStep2*)m_pPageList[m_nCurrentPage])->m_NodNamList);   //传递节点信息
 			((CProductStep3Dlg*)m_pPageList[nPos])->OnWizardActive();
+			break;
+		case 3:
+			if(((CProductStep3Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)
+				return;
+			((CProductStep4Dlg*)m_pPageList[nPos])->OnWizardActive();
+			break;
+		case 4:
+			if(((CProductStep4Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)
+				return;
+			((CProductStep5Dlg*)m_pPageList[nPos])->OnWizardActive();
+			break;
+		case 5:
+			if(((CProductStep5Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)
+				return;
+			((CProductStep6Dlg*)m_pPageList[nPos])->OnWizardActive();
 			break;
 		default:
 			AfxMessageBox(_T("没有下一页,下一步操作有误"));
@@ -314,6 +404,21 @@ void CProductNewDlg::ShowPage(UINT nPos)
 				return;
 			((CProductStep2Dlg*)m_pPageList[nPos])->OnWizardActive();
 			break;
+		case 4:
+			if(((CProductStep4Dlg*)m_pPageList[m_nCurrentPage])->OnWizardPrevious()==-1)
+				return;
+			((CProductStep3Dlg*)m_pPageList[nPos])->OnWizardActive();
+			break;
+		case 5:
+			if(((CProductStep5Dlg*)m_pPageList[m_nCurrentPage])->OnWizardPrevious()==-1)
+				return;
+			((CProductStep4Dlg*)m_pPageList[nPos])->OnWizardActive();
+			break;
+		case 6:
+			if(((CProductStep6Dlg*)m_pPageList[m_nCurrentPage])->OnWizardPrevious()==-1)
+				return;
+			((CProductStep5Dlg*)m_pPageList[nPos])->OnWizardActive();
+			break;
 		default:
 			AfxMessageBox(_T("没有上一页,上一步操作有误"));
 			break;
@@ -325,29 +430,94 @@ void CProductNewDlg::ShowPage(UINT nPos)
 
 }
 
-//设置文本状态显示
+//动态创建Button控件
+CButton* CProductNewDlg::NewMyButton(int nID,CRect rect,int nStyle)
+{
+	CString m_Caption;
+	m_Caption.LoadString( nID ); //取按钮标题
+	CButton *p_Button = new CButton();
+	ASSERT_VALID(p_Button);
+	p_Button->Create( m_Caption, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | nStyle, rect, this, nID ); //创建按钮
+	return p_Button;
+
+}
+//设置文本状态显示变化
 void CProductNewDlg::SetTextShow(UINT nPos)
 {
-	CStatic *cs1,*cs2;
-	cs1=new CStatic();
-	cs2=new CStatic();
+
 	switch(nPos)
 	{
 	case 0:
-		cs1->Create(CString("可制造性评价"),WS_CHILD|WS_VISIBLE|SS_CENTER,CRect(20,30,130,50),this);
-		cs2->Create(CString("产品信息录入"),WS_CHILD|WS_VISIBLE|SS_CENTER,CRect(20,150,130,170),this);
+		m_btnChart0.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(255, 0, 0));
+		m_btnChart1.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart2.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart3.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart4.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart5.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart6.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
 		break;
 	case 1:
-		//cs2->Invalidate();
-		cs2->Create(CString("工艺性评分表"),WS_CHILD|WS_VISIBLE|SS_CENTER,CRect(20,150,130,170),this);
+		m_btnChart0.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart1.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(255, 0, 0));
+		m_btnChart2.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart3.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart4.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart5.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart6.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
 		break;
 	case 2:
-		//cs2->Invalidate();
-		cs2->Create(CString("工艺成熟度表"),WS_CHILD|WS_VISIBLE|SS_CENTER,CRect(20,150,130,170),this);
+		m_btnChart0.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart1.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart2.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(255, 0, 0));
+		m_btnChart3.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart4.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart5.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart6.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
 		break;
 	case 3:
-		//cs2->Invalidate();
-		cs2->Create(CString("环境适应性表"),WS_CHILD|WS_VISIBLE|SS_CENTER,CRect(20,150,130,170),this);
+		m_btnChart0.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart1.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart2.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart3.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(255, 0, 0));
+		m_btnChart4.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart5.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart6.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		break;
+	case 4:
+		m_btnChart0.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart1.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart2.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart3.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart4.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(255, 0, 0));
+		m_btnChart5.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart6.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		break;
+	case 5:
+		m_btnChart0.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart1.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart2.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart3.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart4.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart5.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(255, 0, 0));
+		m_btnChart6.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		break;
+	case 6:
+		m_btnChart0.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart1.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart2.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart3.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart4.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart5.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart6.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(255, 0, 0));
+		break;
+	default:
+		m_btnChart0.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart1.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart2.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart3.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart4.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart5.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		m_btnChart6.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
+		break;
 	}
-	//delete cs1,cs2;
 }

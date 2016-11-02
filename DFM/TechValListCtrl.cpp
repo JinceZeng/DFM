@@ -4,13 +4,14 @@
 #include "stdafx.h"
 #include "DFM.h"
 #include "TechValListCtrl.h"
-
+#include "MatchChart1Dlg.h"
 
 // CTechValListCtrl
 
 IMPLEMENT_DYNAMIC(CTechValListCtrl, CListCtrl)
 
-CTechValListCtrl::CTechValListCtrl()
+CTechValListCtrl::CTechValListCtrl():
+isCombo(true)
 {
 	m_bEditing=FALSE;             //是否存在正在编辑项，默认为否
 	m_nlisCombo.clear();          //记录组合框所在项
@@ -74,11 +75,37 @@ void CTechValListCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 		if(bSelected==FALSE)
 			goto default_session;   //没有点在有效区不被编辑
 
+		//判断是否弹出匹配框
+		isCombo=true;//每次进来都要重新赋值默认为真
+		CString strClassify=this->GetItemText(m_nItem,1);
+		CString strIndexName=this->GetItemText(m_nItem,2);
+		if(strClassify==CString("机箱（匹配）"))
+		{
+			isCombo=false;
+			if(strIndexName==CString("转接器型号与导线匹配"))
+			{
+				CMatchChart1Dlg dlg;
+			    if(dlg.DoModal()==IDOK)
+				{
+					if(dlg.isMatch)
+					{
+						this->SetItemText(m_nItem,3,CString("匹配"));
+						this->SetItemText(m_nItem,4,CString("0"));
+					}
+					else
+					{
+						this->SetItemText(m_nItem,3,CString("不匹配"));
+						this->SetItemText(m_nItem,4,CString("-3"));
+					}
+				}
+			}
+		}
+
 		//是否为组合框控制项
 		int n=m_nlisCombo.size();
 		for(int i=0;i<n;i++)
 		{
-			if(m_nSubItem==m_nlisCombo[i])
+			if(m_nSubItem==m_nlisCombo[i]&&isCombo)
 			{
 				m_bEditing=MyBeginComboBox();
 				return;
@@ -195,7 +222,26 @@ void CTechValListCtrl::MyEndComboBox(void)
 	m_ComboBox.DestroyWindow();
 	m_bEditing=FALSE;
 
-	//::SendMessageA(GetParent()->m_hWnd,WM_USEREDIT,0,0);     //发送自定义消息给父窗口,编辑过也需要重新检测合理性
+
+	//对应分值的输入
+	CString strIndexNam=GetItemText(m_nItem,2);
+	/*CString sql = CString("select * from TechEvalIndex where TechEvalIndexNam= '")+strIndexNam+CString("'");*/
+	CString sql_tabnam;	
+	sql_tabnam.Format(_T("select * from TechEvalIndex where TechEvalIndexNam='%s'"),strIndexNam);
+	_bstr_t bstrsql_tabnam=(_bstr_t)sql_tabnam;
+	_RecordsetPtr m_pRecordset_tab;
+	m_pRecordset_tab=theApp.m_pConnect->Execute(bstrsql_tabnam, NULL, adCmdText);
+	/*m_pRs = theApp.m_pConnect->Execute(_bstr_t(sql), NULL, adCmdText);*/
+	CString strIndexID=(CString)(m_pRecordset_tab->GetCollect("TechEvalIndexID"));  //查询指标ID
+	m_pRecordset_tab.Release();
+
+	CString sql1= CString("select * from EvalIndexVal where TechEvalIndexID= ")+strIndexID+CString("and TechEvalIndexValInfo = '")+txtItem+CString("'");
+
+	 m_pRecordset_tab= theApp.m_pConnect->Execute(_bstr_t(sql1), NULL, adCmdText);
+	CString strDeductVal=(CString)(m_pRecordset_tab->GetCollect("TechDeductVal"));  //查询分值
+
+	SetItemText(m_nItem,4,strDeductVal);                    //设置分值
+
 }
 
 void CTechValListCtrl::PreSubclassWindow()
@@ -269,7 +315,6 @@ CMyEdit1::~CMyEdit1()
 
 BEGIN_MESSAGE_MAP(CMyEdit1, CEdit)
 	ON_WM_CREATE()
-	//ON_CONTROL_REFLECT(EN_KILLFOCUS, &CMyEdit::OnEnKillfocus)
 	ON_WM_KILLFOCUS()
 END_MESSAGE_MAP()
 
@@ -355,6 +400,8 @@ BOOL CMyEdit1::PreTranslateMessage(MSG* pMsg)
 
 
 
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // E:\New_Document\solve_TstWizard\TstWizard\NewListCtrl.cpp : implementation file
 //
@@ -364,7 +411,8 @@ BOOL CMyEdit1::PreTranslateMessage(MSG* pMsg)
 
 IMPLEMENT_DYNAMIC(CMyCombo1, CComboBox)
 
-CMyCombo1::CMyCombo1()
+CMyCombo1::CMyCombo1():
+bMatching(FALSE)
 {
 
 }
@@ -377,6 +425,7 @@ CMyCombo1::~CMyCombo1()
 BEGIN_MESSAGE_MAP(CMyCombo1, CComboBox)
 	ON_CONTROL_REFLECT(CBN_SELCHANGE, &CMyCombo1::OnCbnSelchange)
 	ON_WM_CREATE()
+	//ON_CONTROL_REFLECT(CBN_KILLFOCUS, &CMyCombo1::OnCbnKillfocus)
 END_MESSAGE_MAP()
 
 
@@ -440,3 +489,21 @@ void CMyCombo1::InitCombo(vector<CString>& lisStr)
 		this->InsertString(i,lisStr[i]);
 	}
 }
+
+
+
+
+//void CMyCombo1::OnCbnKillfocus()
+//{
+//	// TODO: Add your control notification handler code here
+//	//得到父窗口，并通知父窗口结束编辑过程
+//	CTechValListCtrl *parent=(CTechValListCtrl*)GetParent();
+//	if(parent&&!bMatching)
+//	{
+//		parent->MyEndComboBox();
+//	}
+//}
+
+
+
+
