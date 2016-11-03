@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "DFM.h"
 #include "TechValListCtrl.h"
-#include "MatchChart1Dlg.h"
 
 // CTechValListCtrl
 
@@ -21,9 +20,12 @@ isCombo(true)
 
 CTechValListCtrl::~CTechValListCtrl()
 {
-	m_nNoEdit.clear();
-	m_nlisCombo.clear();
-	m_strlisCombo.clear(); 
+	//m_nNoEdit.clear();
+	//m_nlisCombo.clear();
+	//m_strlisCombo.clear(); 
+	vector<int>().swap(m_nNoEdit);//清除容器并最小化它的容量
+	vector<int>().swap(m_nlisCombo);
+	vector<vector<CString>>().swap(m_strlisCombo);
 }
 
 
@@ -75,31 +77,15 @@ void CTechValListCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 		if(bSelected==FALSE)
 			goto default_session;   //没有点在有效区不被编辑
 
-		//判断是否弹出匹配框
+		//判断是否是匹配指标项弹出匹配框
 		isCombo=true;//每次进来都要重新赋值默认为真
 		CString strClassify=this->GetItemText(m_nItem,1);
-		CString strIndexName=this->GetItemText(m_nItem,2);
 		if(strClassify==CString("机箱（匹配）"))
 		{
-			isCombo=false;
-			if(strIndexName==CString("转接器型号与导线匹配"))
-			{
-				CMatchChart1Dlg dlg;
-			    if(dlg.DoModal()==IDOK)
-				{
-					if(dlg.isMatch)
-					{
-						this->SetItemText(m_nItem,3,CString("匹配"));
-						this->SetItemText(m_nItem,4,CString("0"));
-					}
-					else
-					{
-						this->SetItemText(m_nItem,3,CString("不匹配"));
-						this->SetItemText(m_nItem,4,CString("-3"));
-					}
-				}
-			}
+			isCombo=false; //设定为非combo行
+			::SendMessageA(GetParent()->m_hWnd,WM_INDEXMATCH,m_nItem,0); //如果是匹配指标项发消息到父窗口，进行匹配  
 		}
+
 
 		//是否为组合框控制项
 		int n=m_nlisCombo.size();
@@ -222,27 +208,34 @@ void CTechValListCtrl::MyEndComboBox(void)
 	m_ComboBox.DestroyWindow();
 	m_bEditing=FALSE;
 
-
-	//对应分值的输入
-	CString strIndexNam=GetItemText(m_nItem,2);
-	/*CString sql = CString("select * from TechEvalIndex where TechEvalIndexNam= '")+strIndexNam+CString("'");*/
-	CString sql_tabnam;	
-	sql_tabnam.Format(_T("select * from TechEvalIndex where TechEvalIndexNam='%s'"),strIndexNam);
-	_bstr_t bstrsql_tabnam=(_bstr_t)sql_tabnam;
-	_RecordsetPtr m_pRecordset_tab;
-	m_pRecordset_tab=theApp.m_pConnect->Execute(bstrsql_tabnam, NULL, adCmdText);
-	/*m_pRs = theApp.m_pConnect->Execute(_bstr_t(sql), NULL, adCmdText);*/
-	CString strIndexID=(CString)(m_pRecordset_tab->GetCollect("TechEvalIndexID"));  //查询指标ID
-	m_pRecordset_tab.Release();
-
-	CString sql1= CString("select * from EvalIndexVal where TechEvalIndexID= ")+strIndexID+CString("and TechEvalIndexValInfo = '")+txtItem+CString("'");
-
-	 m_pRecordset_tab= theApp.m_pConnect->Execute(_bstr_t(sql1), NULL, adCmdText);
-	CString strDeductVal=(CString)(m_pRecordset_tab->GetCollect("TechDeductVal"));  //查询分值
-
-	SetItemText(m_nItem,4,strDeductVal);                    //设置分值
-
+	::SendMessageA(GetParent()->m_hWnd,WM_SETINDEXVAL,m_nItem,0);     //发送自定义消息给父窗口插入评分值
 }
+
+
+//void CTechValListCtrl::InputIndexVal()
+//{
+//	//对应分值的输入
+//	CString strIndexNam=GetItemText(m_nItem,2);
+//	CString strValInfo=GetItemText(m_nItem,3);
+//	/*CString sql = CString("select * from TechEvalIndex where TechEvalIndexNam= '")+strIndexNam+CString("'");*/
+//	CString sql_tabnam;	
+//	sql_tabnam.Format(_T("select * from TechEvalIndex where TechEvalIndexNam='%s'"),strIndexNam);
+//	_bstr_t bstrsql_tabnam=(_bstr_t)sql_tabnam;
+//
+//	m_pRecordset_tab=theApp.m_pConnect->Execute(bstrsql_tabnam, NULL, adCmdText);
+//	/*m_pRs = theApp.m_pConnect->Execute(_bstr_t(sql), NULL, adCmdText);*/
+//	CString strIndexID=(CString)(m_pRecordset_tab->GetCollect("TechEvalIndexID"));  //查询指标ID
+//	m_pRecordset_tab.Release();
+//
+//	CString sql1= CString("select * from EvalIndexVal where TechEvalIndexID= ")+strIndexID+CString("and TechEvalIndexValInfo = '")+strValInfo+CString("'");
+//
+//	m_pRecordset_tab= theApp.m_pConnect->Execute(_bstr_t(sql1), NULL, adCmdText);
+//	CString strDeductVal=(CString)(m_pRecordset_tab->GetCollect("TechDeductVal"));  //查询分值
+//
+//	SetItemText(m_nItem,4,strDeductVal);                    //设置分值
+//}
+
+
 
 void CTechValListCtrl::PreSubclassWindow()
 {

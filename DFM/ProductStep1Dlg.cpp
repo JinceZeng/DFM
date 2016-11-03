@@ -6,6 +6,7 @@
 #include "ProductStep1Dlg.h"
 #include "afxdialogex.h"
 #include "goldata.h"
+#include "MatchChart1Dlg.h"
 
 // CProductStep1Dlg dialog
 
@@ -39,6 +40,8 @@ void CProductStep1Dlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CProductStep1Dlg, CDialogEx)
+	ON_MESSAGE(WM_SETINDEXVAL,&CProductStep1Dlg::OnSetIndexVal)
+	ON_MESSAGE(WM_INDEXMATCH,&CProductStep1Dlg::OnIndexMatch)
 END_MESSAGE_MAP()
 
 
@@ -300,3 +303,53 @@ void CProductStep1Dlg::SetListItem(vector<CTechChartItem>& m_ListCtrlItem)
 //
 //	m_Lvl4TechID.clear();
 //}
+
+
+LRESULT CProductStep1Dlg::OnSetIndexVal(WPARAM wParam,LPARAM lParam)
+{
+	//对应分值的输入
+	CString strIndexNam=m_TechValList.GetItemText(wParam,2);
+	CString strValInfo=m_TechValList.GetItemText(wParam,3);
+	/*CString sql = CString("select * from TechEvalIndex where TechEvalIndexNam= '")+strIndexNam+CString("'");*/
+	CString sql_tabnam;	
+	sql_tabnam.Format(_T("select * from TechEvalIndex where TechEvalIndexNam='%s'"),strIndexNam);
+	_bstr_t bstrsql_tabnam=(_bstr_t)sql_tabnam;
+
+	_RecordsetPtr m_pRecordset_tab;
+	m_pRecordset_tab=theApp.m_pConnect->Execute(bstrsql_tabnam, NULL, adCmdText);
+	/*m_pRs = theApp.m_pConnect->Execute(_bstr_t(sql), NULL, adCmdText);*/
+	CString strIndexID=(CString)(m_pRecordset_tab->GetCollect("TechEvalIndexID"));  //查询指标ID
+	m_pRecordset_tab.Release();
+
+	CString sql1= CString("select * from EvalIndexVal where TechEvalIndexID= ")+strIndexID+CString("and TechEvalIndexValInfo = '")+strValInfo+CString("'");
+
+	m_pRecordset_tab= theApp.m_pConnect->Execute(_bstr_t(sql1), NULL, adCmdText);
+	CString strDeductVal=(CString)(m_pRecordset_tab->GetCollect("TechDeductVal"));  //查询分值
+
+	m_TechValList.SetItemText(wParam,4,strDeductVal);                    //设置分值
+	return 0;
+}
+
+
+LRESULT CProductStep1Dlg::OnIndexMatch(WPARAM wParam,LPARAM lParam)
+{
+	CString strIndexName=m_TechValList.GetItemText(wParam,2);
+	if(strIndexName==CString("转接器型号与导线匹配"))
+	{
+		CMatchChart1Dlg dlg;
+		if(dlg.DoModal()==IDOK)
+		{
+			if(dlg.isMatch)
+			{
+				m_TechValList.SetItemText(wParam,3,CString("匹配"));
+				m_TechValList.SetItemText(wParam,4,CString("0"));
+			}
+			else
+			{
+				m_TechValList.SetItemText(wParam,3,CString("不匹配"));
+				m_TechValList.SetItemText(wParam,4,CString("-3"));
+			}
+		}
+	}
+	return 0;
+}

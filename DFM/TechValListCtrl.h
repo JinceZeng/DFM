@@ -2,6 +2,8 @@
 
 #define ID_MYEDIT 101
 #define ID_MYCOMBO 102
+#define WM_SETINDEXVAL WM_USER+4    //设置得分
+#define WM_INDEXMATCH WM_USER+5    //特殊评分项的匹配操作
 
 
 #include <vector>
@@ -86,21 +88,18 @@ protected:
 	int m_nSubItem;             //编辑表项的列号
 
 
-	//_RecordsetPtr m_pRs,m_pRs1;         
 	vector<int> m_nlisCombo;               //录组合框对应的列(方便编辑)
-	bool isCombo;                          //进一步判断是否需要下拉
 	vector<int> m_nNoEdit;                 //记录不可编辑项
 	vector<vector<CString>> m_strlisCombo;         //存储组合框所包含的字符串   
 
 
 public:
+	bool isCombo;                          //进一步判断是否需要下拉
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-protected:
 	BOOL MyBeginEdit(void);
-	BOOL MyBeginComboBox(void);     //3  开始编辑组合框
-public:
+	BOOL MyBeginComboBox(void);     //开始编辑组合框
 	void MyEndEdit(bool bValidate);
-	void MyEndComboBox(void);         //4 结束组合框编辑
+	void MyEndComboBox(void);         //结束组合框编辑
 
 	virtual void PreSubclassWindow();
 	//afx_msg void OnNMRClick(NMHDR *pNMHDR, LRESULT *pResult);

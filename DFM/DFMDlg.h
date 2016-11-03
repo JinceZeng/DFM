@@ -58,7 +58,6 @@ public:
 	afx_msg LRESULT OnDeleteData(WPARAM wParam,LPARAM lParam);//自定义消息删除某一条产品信息
 	afx_msg LRESULT OnUpdateList(WPARAM wParam,LPARAM lParam);//自定义消息刷新list
 
-
 	CPInfoListCtrl m_ProductInfoList;
 	void ChangeStyle(CPInfoListCtrl &m_ListCtrl);//改变list风格
     void UpdateListCtrl();    //list数据刷新

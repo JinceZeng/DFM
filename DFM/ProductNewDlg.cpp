@@ -23,16 +23,17 @@ CProductNewDlg::CProductNewDlg(CWnd* pParent /*=NULL*/)
 
 CProductNewDlg::~CProductNewDlg()
 {
-	int n=m_pPageList.size();
+	//int n=m_pPageList.size();
 
-	for(int i=0;i<n;i++)
-	{
-		delete m_pPageList[i];      //释放内存，在这里释放内存因为要把树信息传出去
-	}
+	//for(int i=0;i<n;i++)
+	//{
+	//	delete m_pPageList[i];      //释放内存，在这里释放内存因为要把树信息传出去
+	//}
 
-	m_pPageList.clear();            //记录各子对话框
+	//m_pPageList.clear();            //记录各子对话框
+	vector<CDialogEx*>().swap(m_pPageList);//清除容器并最小化它的容量
 
-	delete m_csCaption;             //释放cstatic指针内存
+	//delete m_csCaption;             //释放cstatic指针内存
 }
 
 void CProductNewDlg::DoDataExchange(CDataExchange* pDX)
@@ -206,8 +207,8 @@ BOOL CProductNewDlg::OnInitDialog()
 
 
 	//////////////////////////////////////状态显示初始化
-	m_csCaption=new CStatic();
-	m_csCaption->Create(CString("可制造性评价"),WS_CHILD|WS_VISIBLE|SS_CENTER,CRect(20,30,130,50),this);
+	//m_csCaption=new CStatic();
+	m_csCaption.Create(CString("可制造性评价"),WS_CHILD|WS_VISIBLE|SS_CENTER,CRect(20,30,130,50),this);
 
 	short	shBtnColor = 30;
 	m_btnChart0.OffsetColor(CButtonST::BTNST_COLOR_BK_IN, shBtnColor);
@@ -430,17 +431,6 @@ void CProductNewDlg::ShowPage(UINT nPos)
 
 }
 
-//动态创建Button控件
-CButton* CProductNewDlg::NewMyButton(int nID,CRect rect,int nStyle)
-{
-	CString m_Caption;
-	m_Caption.LoadString( nID ); //取按钮标题
-	CButton *p_Button = new CButton();
-	ASSERT_VALID(p_Button);
-	p_Button->Create( m_Caption, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | nStyle, rect, this, nID ); //创建按钮
-	return p_Button;
-
-}
 //设置文本状态显示变化
 void CProductNewDlg::SetTextShow(UINT nPos)
 {
