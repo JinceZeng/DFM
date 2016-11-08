@@ -95,6 +95,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="res\IndexInfo1.bmp" />
     <None Include="res\Login.ico" />
     <None Include="res\DFM.ico" />
     <None Include="res\DFM.rc2" />
@@ -109,8 +110,11 @@
     <ClInclude Include="DFM.h" />
     <ClInclude Include="DFMDlg.h" />
     <ClInclude Include="goldata.h" />
+    <ClInclude Include="IndexInfo1Dlg.h" />
     <ClInclude Include="LoginDlg.h" />
     <ClInclude Include="MatchChart1Dlg.h" />
+    <ClInclude Include="MatchChart2Dlg.h" />
+    <ClInclude Include="MatchChart3Dlg.h" />
     <ClInclude Include="PInfoListCtrl.h" />
     <ClInclude Include="ProductNewDlg.h" />
     <ClInclude Include="ProductOutDlg.h" />
@@ -132,8 +136,11 @@
     <ClCompile Include="ChangePwdDlg.cpp" />
     <ClCompile Include="DFM.cpp" />
     <ClCompile Include="DFMDlg.cpp" />
+    <ClCompile Include="IndexInfo1Dlg.cpp" />
     <ClCompile Include="LoginDlg.cpp" />
     <ClCompile Include="MatchChart1Dlg.cpp" />
+    <ClCompile Include="MatchChart2Dlg.cpp" />
+    <ClCompile Include="MatchChart3Dlg.cpp" />
     <ClCompile Include="PInfoListCtrl.cpp" />
     <ClCompile Include="ProductNewDlg.cpp" />
     <ClCompile Include="ProductOutDlg.cpp" />

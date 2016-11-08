@@ -3,7 +3,8 @@
 #define ID_MYEDIT 101
 #define ID_MYCOMBO 102
 #define WM_SETINDEXVAL WM_USER+4    //设置得分
-#define WM_INDEXMATCH WM_USER+5    //特殊评分项的匹配操作
+#define WM_INDEXMATCH WM_USER+5     //特殊评分项的匹配操作
+#define WM_SETINDEXINFO WM_USER+6   //设置指标评分说明
 
 
 #include <vector>

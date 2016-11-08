@@ -23,12 +23,12 @@ CProductNewDlg::CProductNewDlg(CWnd* pParent /*=NULL*/)
 
 CProductNewDlg::~CProductNewDlg()
 {
-	//int n=m_pPageList.size();
+	int n=m_pPageList.size();
 
-	//for(int i=0;i<n;i++)
-	//{
-	//	delete m_pPageList[i];      //释放内存，在这里释放内存因为要把树信息传出去
-	//}
+	for(int i=0;i<n;i++)
+	{
+		delete m_pPageList[i];      //释放内存，在这里释放内存因为要把树信息传出去
+	}
 
 	//m_pPageList.clear();            //记录各子对话框
 	vector<CDialogEx*>().swap(m_pPageList);//清除容器并最小化它的容量
@@ -345,7 +345,7 @@ void CProductNewDlg::ShowPage(UINT nPos)
 			if(((CProductStep0Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)  //保存当前工作不成功继续当前页
 				return;
 			((CProductStep1Dlg*)m_pPageList[nPos])->m_TechValList.DeleteAllItems();
-			((CProductStep1Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[m_nCurrentPage])->m_ProductInfo);
+			((CProductStep1Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[0])->m_ProductInfo);
 			((CProductStep1Dlg*)m_pPageList[nPos])->ShowListCtrl();
 			((CProductStep1Dlg*)m_pPageList[nPos])->OnWizardActive();
 
@@ -359,6 +359,9 @@ void CProductNewDlg::ShowPage(UINT nPos)
 		case 2:
 			if(((CProductStep2Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)
 				return;
+			((CProductStep3Dlg*)m_pPageList[nPos])->m_ImpactVibValList.DeleteAllItems();
+			((CProductStep3Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[0])->m_ProductInfo);
+			((CProductStep3Dlg*)m_pPageList[nPos])->ShowListCtrl();
 			((CProductStep3Dlg*)m_pPageList[nPos])->OnWizardActive();
 			break;
 		case 3:

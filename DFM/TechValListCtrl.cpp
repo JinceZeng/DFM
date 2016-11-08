@@ -11,8 +11,8 @@ IMPLEMENT_DYNAMIC(CTechValListCtrl, CListCtrl)
 
 CTechValListCtrl::CTechValListCtrl():
 isCombo(true)
+,m_bEditing(FALSE)
 {
-	m_bEditing=FALSE;             //是否存在正在编辑项，默认为否
 	m_nlisCombo.clear();          //记录组合框所在项
 	m_nNoEdit.clear();           //记录不可编辑项
 	m_strlisCombo.clear();       //存储组合框所包含的字符串 
@@ -85,7 +85,7 @@ void CTechValListCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 			isCombo=false; //设定为非combo行
 			::SendMessageA(GetParent()->m_hWnd,WM_INDEXMATCH,m_nItem,0); //如果是匹配指标项发消息到父窗口，进行匹配  
 		}
-
+		else ::SendMessageA(GetParent()->m_hWnd,WM_SETINDEXINFO,m_nItem,0); //如果是匹配指标项发消息到父窗口，进行匹配  
 
 		//是否为组合框控制项
 		int n=m_nlisCombo.size();
@@ -286,6 +286,8 @@ void CTechValListCtrl::SetComboString(vector<CString>& lisStr)
 	for(int i=0;i<n;i++)
 		vtemp.push_back(lisStr[i]);
 	m_strlisCombo.push_back(vtemp);
+
+	vector<CString>().swap(vtemp);//释放vector
 }
 
 

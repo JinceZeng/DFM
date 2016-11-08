@@ -31,6 +31,9 @@
     <None Include="res\Login.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="res\IndexInfo1.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DFM.h">
@@ -102,6 +105,15 @@
     <ClInclude Include="MatchChart1Dlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MatchChart2Dlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MatchChart3Dlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexInfo1Dlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DFM.cpp">
@@ -159,6 +171,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MatchChart1Dlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MatchChart2Dlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MatchChart3Dlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexInfo1Dlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

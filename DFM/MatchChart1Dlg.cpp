@@ -76,7 +76,7 @@ void CMatchChart1Dlg::OnBnClickedOk()
 	//获取面积上下限要求
 	CString strArea=(CString)(m_pRs->GetCollect("AdapterArea"));
 	CString strAreaLower=strArea.Left(strArea.Find('-'));
-	CString strAreaTop=strArea.Right(strArea.Find('-'));
+	CString strAreaTop=strArea.Right(strArea.GetLength()-strArea.Find('-')-1);
 	double intAreaLower=_tstof(strAreaLower);  //cstring转double
 	double intAreaTop=_tstof(strAreaTop);  
 
