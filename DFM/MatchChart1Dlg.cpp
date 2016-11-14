@@ -68,7 +68,7 @@ void CMatchChart1Dlg::OnBnClickedOk()
 	// TODO: Add your control notification handler code here
 	UpdateData(TRUE);
 	CString strType;
-	m_cmbAdapterType.GetLBText(m_cmbAdapterType.GetCurSel(),strType);
+	m_cmbAdapterType.GetLBText(m_cmbAdapterType.GetCurSel(),strType);//获取当前下拉单选择的值
 	_RecordsetPtr m_pRs;
 	CString sql = CString("select * from Adapter_WireMatching where AdapterType= '")+strType+CString("'");
 	m_pRs = theApp.m_pConnect->Execute(_bstr_t(sql), NULL, adCmdText);

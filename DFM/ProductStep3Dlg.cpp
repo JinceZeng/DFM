@@ -127,7 +127,7 @@ void CProductStep3Dlg::ReadTechChart(CProductInfo& m_ProductInfo)
 	_RecordsetPtr m_pRs0;
 	m_Lvl3TechID.clear();
 	//m_Lvl4TechID.clear();
-	int UpID=13;             //搜寻工艺指标（指标ID为13）的子项
+	int UpID=13;             //搜寻工艺指标（指标ID为13：振动适应性）的子项
 	CString strUpID=(CString)(char *)(_bstr_t)(UpID);
 
 	CString sql0 = CString("select * from CreateIndexTree where EvalModelID=")+m_ProductInfo.str_EvalType+CString("and TechEvalIndexUpID=")+strUpID;
@@ -236,7 +236,8 @@ void CProductStep3Dlg::SetListItem(vector<CTechChartItem>& m_ListCtrlItem)
 LRESULT CProductStep3Dlg::OnSetIndexInfo(WPARAM wParam,LPARAM lParam)
 {
 	m_IndexInfoTxt.SetWindowText(m_IndexInfo[wParam]);//编辑框显示指标评分介绍
-	if (m_IndexInfo[wParam]==CString("插入图片"))
+
+	if (m_IndexInfo[wParam]==CString("插入图片"))   //特殊情形提供图片信息
 	{
 		//采用成员变量创建一个非模态对话框  
 		if(pDlg==NULL)

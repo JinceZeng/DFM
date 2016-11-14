@@ -107,6 +107,7 @@
     <ClInclude Include="BCMenu.h" />
     <ClInclude Include="BtnST.h" />
     <ClInclude Include="ChangePwdDlg.h" />
+    <ClInclude Include="ChoosePathDlg.h" />
     <ClInclude Include="DFM.h" />
     <ClInclude Include="DFMDlg.h" />
     <ClInclude Include="goldata.h" />
@@ -134,6 +135,7 @@
     <ClCompile Include="BCMenu.cpp" />
     <ClCompile Include="BtnST.cpp" />
     <ClCompile Include="ChangePwdDlg.cpp" />
+    <ClCompile Include="ChoosePathDlg.cpp" />
     <ClCompile Include="DFM.cpp" />
     <ClCompile Include="DFMDlg.cpp" />
     <ClCompile Include="IndexInfo1Dlg.cpp" />

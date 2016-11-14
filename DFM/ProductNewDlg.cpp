@@ -344,7 +344,7 @@ void CProductNewDlg::ShowPage(UINT nPos)
 		case 0:
 			if(((CProductStep0Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)  //保存当前工作不成功继续当前页
 				return;
-			((CProductStep1Dlg*)m_pPageList[nPos])->m_TechValList.DeleteAllItems();
+			//((CProductStep1Dlg*)m_pPageList[nPos])->m_TechValList.DeleteAllItems();
 			((CProductStep1Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[0])->m_ProductInfo);
 			((CProductStep1Dlg*)m_pPageList[nPos])->ShowListCtrl();
 			((CProductStep1Dlg*)m_pPageList[nPos])->OnWizardActive();
@@ -359,7 +359,7 @@ void CProductNewDlg::ShowPage(UINT nPos)
 		case 2:
 			if(((CProductStep2Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)
 				return;
-			((CProductStep3Dlg*)m_pPageList[nPos])->m_ImpactVibValList.DeleteAllItems();
+			//((CProductStep3Dlg*)m_pPageList[nPos])->m_ImpactVibValList.DeleteAllItems();
 			((CProductStep3Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[0])->m_ProductInfo);
 			((CProductStep3Dlg*)m_pPageList[nPos])->ShowListCtrl();
 			((CProductStep3Dlg*)m_pPageList[nPos])->OnWizardActive();
@@ -367,11 +367,17 @@ void CProductNewDlg::ShowPage(UINT nPos)
 		case 3:
 			if(((CProductStep3Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)
 				return;
+			//((CProductStep4Dlg*)m_pPageList[nPos])->m_ThreeProValList.DeleteAllItems();
+			((CProductStep4Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[0])->m_ProductInfo);
+			((CProductStep4Dlg*)m_pPageList[nPos])->ShowListCtrl();
 			((CProductStep4Dlg*)m_pPageList[nPos])->OnWizardActive();
 			break;
 		case 4:
 			if(((CProductStep4Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)
 				return;
+			//((CProductStep5Dlg*)m_pPageList[nPos])->m_EconomyList.DeleteAllItems();
+			((CProductStep5Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[0])->m_ProductInfo);
+			((CProductStep5Dlg*)m_pPageList[nPos])->ShowListCtrl();
 			((CProductStep5Dlg*)m_pPageList[nPos])->OnWizardActive();
 			break;
 		case 5:

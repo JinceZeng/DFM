@@ -4,6 +4,9 @@
 #include "stdafx.h"
 #include "DFM.h"
 #include "TechValListCtrl.h"
+#include <string>
+
+using namespace std;
 
 // CTechValListCtrl
 
@@ -31,6 +34,7 @@ CTechValListCtrl::~CTechValListCtrl()
 
 BEGIN_MESSAGE_MAP(CTechValListCtrl, CListCtrl)
 	ON_WM_LBUTTONDOWN()
+	ON_MESSAGE(WM_COMBOSEARCH,&CTechValListCtrl::OnComboSearch)
 END_MESSAGE_MAP()
 
 
@@ -176,20 +180,31 @@ BOOL CTechValListCtrl::MyBeginComboBox(void)
 	if(GetSubItemRect(m_nItem,m_nSubItem,LVIR_LABEL,rect)==FALSE)   //获取列表项的大小
 		return FALSE;
 
+	//如果是这两种类型的指标则创建DropDown风格的combo，用于编辑匹配字符
+	CString strClassify=this->GetItemText(m_nItem,1);
+	if (strClassify==CString("材料选择（匹配）")|strClassify==CString("表面处理（匹配）"))
+	{
+		int style=WS_CHILD|WS_CLIPSIBLINGS|WS_EX_TOOLWINDOW|WS_BORDER|WS_VSCROLL|CBS_DROPDOWN;
+		if(m_ComboBox.Create(style,rect,this,ID_MYCOMBO)==FALSE)     
+			return FALSE;
+	}
+	else  //一般来说创建DropDownList风格combo
+	{
 	//创建编辑控件
 	int style=WS_CHILD|WS_CLIPSIBLINGS|WS_EX_TOOLWINDOW|WS_BORDER|WS_VSCROLL|CBS_DROPDOWNLIST;
 	if(m_ComboBox.Create(style,rect,this,ID_MYCOMBO)==FALSE)     
 		return FALSE;
-
 	//取被编辑表项的文字
-	CString txtItem=GetItemText(m_nItem,m_nSubItem);        //获取当前列表项的文本
+	//CString txtItem=GetItemText(m_nItem,m_nSubItem);        //获取当前列表项的文本
 
 	m_ComboBox.InitCombo(m_strlisCombo[m_nItem]);     //填充组合框
 
-	int n=m_ComboBox.FindString(0,txtItem);
+	//int n=m_ComboBox.FindString(0,txtItem);
 
-	if(n>=0)
-		m_ComboBox.SetCurSel(n);
+	//if(n>=0)
+	//m_ComboBox.SetCurSel(n);
+
+	}
 
 	m_ComboBox.SetFocus();
 	m_ComboBox.ShowWindow(SW_SHOW);
@@ -200,10 +215,13 @@ BOOL CTechValListCtrl::MyBeginComboBox(void)
 //4 结束组合框编辑
 void CTechValListCtrl::MyEndComboBox(void)
 {
+	UpdateData();
 	CString txtItem;
-	m_ComboBox.GetWindowTextW(txtItem);
+	//m_ComboBox.GetWindowTextW(txtItem);
+	m_ComboBox.GetLBText(m_ComboBox.GetCurSel(), txtItem);
 	SetItemText(m_nItem,m_nSubItem,txtItem);
 
+	UpdateData(FALSE);
 	//销毁编辑窗口
 	m_ComboBox.DestroyWindow();
 	m_bEditing=FALSE;
@@ -211,29 +229,6 @@ void CTechValListCtrl::MyEndComboBox(void)
 	::SendMessageA(GetParent()->m_hWnd,WM_SETINDEXVAL,m_nItem,0);     //发送自定义消息给父窗口插入评分值
 }
 
-
-//void CTechValListCtrl::InputIndexVal()
-//{
-//	//对应分值的输入
-//	CString strIndexNam=GetItemText(m_nItem,2);
-//	CString strValInfo=GetItemText(m_nItem,3);
-//	/*CString sql = CString("select * from TechEvalIndex where TechEvalIndexNam= '")+strIndexNam+CString("'");*/
-//	CString sql_tabnam;	
-//	sql_tabnam.Format(_T("select * from TechEvalIndex where TechEvalIndexNam='%s'"),strIndexNam);
-//	_bstr_t bstrsql_tabnam=(_bstr_t)sql_tabnam;
-//
-//	m_pRecordset_tab=theApp.m_pConnect->Execute(bstrsql_tabnam, NULL, adCmdText);
-//	/*m_pRs = theApp.m_pConnect->Execute(_bstr_t(sql), NULL, adCmdText);*/
-//	CString strIndexID=(CString)(m_pRecordset_tab->GetCollect("TechEvalIndexID"));  //查询指标ID
-//	m_pRecordset_tab.Release();
-//
-//	CString sql1= CString("select * from EvalIndexVal where TechEvalIndexID= ")+strIndexID+CString("and TechEvalIndexValInfo = '")+strValInfo+CString("'");
-//
-//	m_pRecordset_tab= theApp.m_pConnect->Execute(_bstr_t(sql1), NULL, adCmdText);
-//	CString strDeductVal=(CString)(m_pRecordset_tab->GetCollect("TechDeductVal"));  //查询分值
-//
-//	SetItemText(m_nItem,4,strDeductVal);                    //设置分值
-//}
 
 
 
@@ -290,7 +285,43 @@ void CTechValListCtrl::SetComboString(vector<CString>& lisStr)
 	vector<CString>().swap(vtemp);//释放vector
 }
 
+//combo字符查找消息（目前查找匹配准确度有待完善）
+LRESULT CTechValListCtrl::OnComboSearch(WPARAM wParam,LPARAM lParam)
+{
+	UpdateData();
 
+	CString cstr_search;
+	m_ComboBox.GetWindowText(cstr_search);
+
+	//数据初始化开始
+	for (int i = 0; i <m_ComboBox.GetCount(); i++)
+	{
+		m_ComboBox.DeleteString(0);
+	}			
+	//初始化结束
+	if (cstr_search.IsEmpty()){		
+		return 0;
+	}
+
+	string str_search = (_bstr_t)(cstr_search);
+	string str_list;
+	for (int i=0;i<m_strlisCombo[m_nItem].size();++i)
+	{
+		str_list = (_bstr_t)(m_strlisCombo[m_nItem][i]);
+		//(str_list.find(str_search) != string::npos);
+		if (str_list.find(str_search) != string::npos)
+		{
+			m_ComboBox.AddString(m_strlisCombo[m_nItem][i]);
+		}
+	}
+	if(m_ComboBox.GetCount()==0)
+		m_ComboBox.AddString(CString("其他"));           //若匹配不上字符则添加“其他”项
+
+	m_ComboBox.ShowDropDown();
+	SetCursor(LoadCursor(NULL, IDC_ARROW));
+	UpdateData(false);
+	return 0;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -421,6 +452,7 @@ BEGIN_MESSAGE_MAP(CMyCombo1, CComboBox)
 	ON_CONTROL_REFLECT(CBN_SELCHANGE, &CMyCombo1::OnCbnSelchange)
 	ON_WM_CREATE()
 	//ON_CONTROL_REFLECT(CBN_KILLFOCUS, &CMyCombo1::OnCbnKillfocus)
+	ON_CONTROL_REFLECT(CBN_EDITCHANGE, &CMyCombo1::OnCbnEditchange)
 END_MESSAGE_MAP()
 
 
@@ -430,17 +462,7 @@ END_MESSAGE_MAP()
 
 
 
-void CMyCombo1::OnCbnSelchange()
-{
-	// TODO: Add your control notification handler code here
-	
-	//得到父窗口，并通知父窗口结束编辑过程
-	CTechValListCtrl *parent=(CTechValListCtrl*)GetParent();
-	if(parent)
-	{
-		parent->MyEndComboBox();
-	}
-}
+
 
 
 int CMyCombo1::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -500,5 +522,22 @@ void CMyCombo1::InitCombo(vector<CString>& lisStr)
 //}
 
 
+void CMyCombo1::OnCbnSelchange()
+{
+	// TODO: Add your control notification handler code here
+
+	//得到父窗口，并通知父窗口结束编辑过程
+	CTechValListCtrl *parent=(CTechValListCtrl*)GetParent();
+	if(parent)
+	{
+		parent->MyEndComboBox();
+	}
+}
+
+void CMyCombo1::OnCbnEditchange()
+{
+	// TODO: Add your control notification handler code here
+	::SendMessageA(GetParent()->m_hWnd,WM_COMBOSEARCH,0,0);
+}
 
 

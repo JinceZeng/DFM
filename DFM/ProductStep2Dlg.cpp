@@ -5,6 +5,7 @@
 #include "DFM.h"
 #include "ProductStep2Dlg.h"
 #include "afxdialogex.h"
+#include "ChoosePathDlg.h"
 
 
 // CProductStep2Dlg dialog
@@ -19,7 +20,7 @@ CProductStep2Dlg::CProductStep2Dlg(CWnd* pParent /*=NULL*/)
 
 CProductStep2Dlg::~CProductStep2Dlg()
 {
-	str_AllItem.clear();
+	vector<vector<CString>>().swap(str_AllItem);
 }
 
 void CProductStep2Dlg::DoDataExchange(CDataExchange* pDX)
@@ -106,7 +107,18 @@ DWORD CProductStep2Dlg::OnWizardPrevious()
 void CProductStep2Dlg::OnBnClickedInputmat()
 {
 	// TODO: Add your control notification handler code here
-	ReadMatChart(CString("ceshi.xlsx"),0 , false);
+	CChoosePathDlg dlg;
+	CString str;
+	if (dlg.DoModal()==IDOK)
+	{
+		UpdateData();
+		str=dlg.m_editPathTxt;
+		if (str.IsEmpty()){
+			AfxMessageBox(CString("请选择导入文件!"));
+			return;
+		}
+	}
+	ReadMatChart(str,0 , false);
 	SetListItem(str_AllItem);
 }
 

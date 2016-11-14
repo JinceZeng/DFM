@@ -1,5 +1,7 @@
 #pragma once
-
+#include "afxcmn.h"
+#include "TechValListCtrl.h"
+#include "goldata.h"
 
 // CProductStep5Dlg dialog
 
@@ -27,4 +29,15 @@ public:
 
 	///////////////////////当前页进入上一页（由CListCtrl能自动保存信息，所以只需在 OnWizardNext保存信息传递到下一页）
 	DWORD OnWizardPrevious();   //可以检验上一步工作不用保存
+	CTechValListCtrl m_EconomyList;
+	vector<CString> m_Lvl3TechID;              //第三层工艺指标ID
+	vector<vector<CString>> m_IndexValInfo;    //存储指标评分的评分项和对应分值，用于之后匹配（依次访问数据库会引起堆栈崩溃） 
+	vector<CTechChartItem> m_ListCtrlItem;     //存储List条目
+
+	void ReadTechChart(CProductInfo &m_ProductInfo);              //读取工艺表
+	void ShowListCtrl();                                          //显示评分表
+	void SetListItem(vector<CTechChartItem> &m_ListCtrlItem);     //设置list条目
+
+	afx_msg LRESULT OnSetIndexVal(WPARAM wParam,LPARAM lParam);//设置指标得分
+	virtual BOOL OnInitDialog();
 };
