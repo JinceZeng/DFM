@@ -51,11 +51,11 @@ BOOL CProductStep2Dlg::OnInitDialog()
 	m_MatInfoList.GetClientRect(&rect1);
 	width1=rect1.Width();
 
-	m_MatInfoList.InsertColumn(0,CString("序号"),LVCFMT_CENTER,width1/10);
-	m_MatInfoList.InsertColumn(1,CString("材料编号"),LVCFMT_CENTER,width1*3/10);
+	m_MatInfoList.InsertColumn(0,CString("位号"),LVCFMT_CENTER,width1/10);
+	m_MatInfoList.InsertColumn(1,CString("代号"),LVCFMT_CENTER,width1*3/10);
 	m_MatInfoList.InsertColumn(2,CString("材料名称"),LVCFMT_CENTER,width1*3/10);
-	m_MatInfoList.InsertColumn(3,CString("使用状态"),LVCFMT_CENTER,width1/5);
-	m_MatInfoList.InsertColumn(4,CString("评分"),LVCFMT_CENTER,width1/10);
+	m_MatInfoList.InsertColumn(3,CString("数量"),LVCFMT_CENTER,width1/10);
+	m_MatInfoList.InsertColumn(4,CString("备注"),LVCFMT_CENTER,width1/5);
 
 
 	//设置不可编辑列
@@ -205,12 +205,18 @@ void CProductStep2Dlg::ReadMatChart(CString excelFile,int sheetIndex,bool header
 void CProductStep2Dlg::SetListItem(vector<vector<CString>>& str_AllItem)
 {
 	m_MatInfoList.DeleteAllItems();
-	for (int i=0;i<str_AllItem.size()-1;i++)
+	for (int i=3,n=0;i<str_AllItem.size()-1;i++)       //插入数据一般从第四行开始
 	{
-		m_MatInfoList.InsertItem(i,str_AllItem[i+1][0]);
-		for (int j=0;j<str_AllItem[i+1].size();j++)
-		{
-			m_MatInfoList.SetItemText(i,j,str_AllItem[i+1][j]);
-		}
+		CString strItem;
+		strItem.Format(CString("%d"),n+1);
+
+		if(str_AllItem[i][3]==CString("")) continue;
+		m_MatInfoList.InsertItem(n,strItem);              //数据取法和明细表的格式有关
+		m_MatInfoList.SetItemText(n,1,str_AllItem[i][3]); 
+		m_MatInfoList.SetItemText(n,2,str_AllItem[i][5]);
+		m_MatInfoList.SetItemText(n,3,str_AllItem[i][7]);
+		m_MatInfoList.SetItemText(n,4,str_AllItem[i][8]);
+
+		++n;
 	}
 }
