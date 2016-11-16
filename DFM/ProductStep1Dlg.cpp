@@ -196,7 +196,7 @@ void CProductStep1Dlg::ShowListCtrl()
 	CTechChartItem m_OneItem;//每条list的信息
 	int nItem=1;             //序号
 	//vector<vector<CString>> m_Lvl4TechNam;
-	for (int i=0;i<m_Lvl3TechID.size();i++)
+	for (int i=0;i<m_Lvl3TechID.size();i++)    //依次访问评价指标表，读取指标相关信息
 	{
 		CString strItem;
 		strItem.Format(CString("%d"),nItem);
@@ -207,13 +207,12 @@ void CProductStep1Dlg::ShowListCtrl()
 		CString strTechNam=(CString)(m_pRs->GetCollect("TechEvalIndexNam"));
 		CString strClassify=(CString)(m_pRs->GetCollect("TechClassify"));
 
-		vector<CString> m_ValComboStr;  //用于存储评分combo字符
-
-
+		//访问指标评分表，读取评分项信息
 		CString sql2 = CString("select * from EvalIndexVal where TechEvalIndexID=")+m_Lvl3TechID[i];
 		m_pRs2 = theApp.m_pConnect->Execute(_bstr_t(sql2), NULL, adCmdText);
 
-		vector<CString> vTemp;
+		vector<CString> m_ValComboStr;  //用于存储评分combo字符
+		vector<CString> vTemp;          //临时存储某一指标对应的评分信息
 		while(!m_pRs2->adoEOF)
 		{
 			CString strValInfo=(CString)(m_pRs2->GetCollect("TechEvalIndexValInfo"));
@@ -226,7 +225,7 @@ void CProductStep1Dlg::ShowListCtrl()
 			m_pRs2->MoveNext();
 		}
 
-		m_IndexValInfo.push_back(vTemp);
+		m_IndexValInfo.push_back(vTemp);//存储所有指标的评分信息
 		vector<CString>().swap(vTemp);//释放vector
 
         //每条list信息
@@ -347,12 +346,14 @@ LRESULT CProductStep1Dlg::OnSetIndexVal(WPARAM wParam,LPARAM lParam)
 	CString strDeductVal=m_IndexValInfo[wParam][j].Right(m_IndexValInfo[wParam][j].GetLength()-m_IndexValInfo[wParam][j].Find(':')-1);//提取评分
 	m_TechValList.SetItemText(wParam,4,strDeductVal);                    //设置分值
 
+	m_ListCtrlItem[wParam].m_ComboStrChoose=strValInfo;                  //存储所选的评分项
 	m_ListCtrlItem[wParam].m_IndexScore=strDeductVal;                    //存储分值，用于后期模糊综合分析
 
 	return 0;
 }
 
 
+//指标匹配评分
 LRESULT CProductStep1Dlg::OnIndexMatch(WPARAM wParam,LPARAM lParam)
 {
 	CString strIndexName=m_TechValList.GetItemText(wParam,2);
@@ -366,11 +367,17 @@ LRESULT CProductStep1Dlg::OnIndexMatch(WPARAM wParam,LPARAM lParam)
 			{
 				m_TechValList.SetItemText(wParam,3,CString("匹配"));
 				m_TechValList.SetItemText(wParam,4,CString("0"));
+
+				m_ListCtrlItem[wParam].m_ComboStrChoose=CString("匹配");             //存储所选的评分项
+				m_ListCtrlItem[wParam].m_IndexScore=CString("0");                    //存储分值，用于后期模糊综合分析
 			}
 			else
 			{
 				m_TechValList.SetItemText(wParam,3,CString("不匹配"));
 				m_TechValList.SetItemText(wParam,4,CString("-3"));
+
+				m_ListCtrlItem[wParam].m_ComboStrChoose=CString("不匹配");             //存储所选的评分项
+				m_ListCtrlItem[wParam].m_IndexScore=CString("-3");                     //存储分值，用于后期模糊综合分析
 			}
 		}
 	}
@@ -384,11 +391,17 @@ LRESULT CProductStep1Dlg::OnIndexMatch(WPARAM wParam,LPARAM lParam)
 			{
 				m_TechValList.SetItemText(wParam,3,CString("匹配"));
 				m_TechValList.SetItemText(wParam,4,CString("0"));
+
+				m_ListCtrlItem[wParam].m_ComboStrChoose=CString("匹配");              //存储所选的评分项
+				m_ListCtrlItem[wParam].m_IndexScore=CString("0");                     //存储分值，用于后期模糊综合分析
 			}
 			else
 			{
 				m_TechValList.SetItemText(wParam,3,CString("不匹配"));
 				m_TechValList.SetItemText(wParam,4,CString("-3"));
+
+				m_ListCtrlItem[wParam].m_ComboStrChoose=CString("不匹配");             //存储所选的评分项
+				m_ListCtrlItem[wParam].m_IndexScore=CString("-3");                     //存储分值，用于后期模糊综合分析
 			}
 		}
 	}
@@ -402,11 +415,17 @@ LRESULT CProductStep1Dlg::OnIndexMatch(WPARAM wParam,LPARAM lParam)
 			{
 				m_TechValList.SetItemText(wParam,3,CString("匹配"));
 				m_TechValList.SetItemText(wParam,4,CString("0"));
+
+				m_ListCtrlItem[wParam].m_ComboStrChoose=CString("匹配");             //存储所选的评分项
+				m_ListCtrlItem[wParam].m_IndexScore=CString("0");                     //存储分值，用于后期模糊综合分析
 			}
 			else
 			{
 				m_TechValList.SetItemText(wParam,3,CString("不匹配"));
 				m_TechValList.SetItemText(wParam,4,CString("-3"));
+
+				m_ListCtrlItem[wParam].m_ComboStrChoose=CString("不匹配");             //存储所选的评分项
+				m_ListCtrlItem[wParam].m_IndexScore=CString("-3");                     //存储分值，用于后期模糊综合分析
 			}
 		}
 	}

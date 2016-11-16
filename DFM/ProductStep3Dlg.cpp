@@ -281,6 +281,7 @@ LRESULT CProductStep3Dlg::OnSetIndexVal(WPARAM wParam,LPARAM lParam)
 	CString strDeductVal=m_IndexValInfo[wParam][j].Right(m_IndexValInfo[wParam][j].GetLength()-m_IndexValInfo[wParam][j].Find(':')-1);//提取评分
 	m_ImpactVibValList.SetItemText(wParam,4,strDeductVal);                    //设置分值
 
+	m_ListCtrlItem[wParam].m_ComboStrChoose=strValInfo;                  //存储所选的评分项
 	m_ListCtrlItem[wParam].m_IndexScore=strDeductVal;                    //存储分值，用于后期模糊综合分析
 
 	return 0;
