@@ -73,6 +73,7 @@ BEGIN_MESSAGE_MAP(CDFMDlg, CDialogEx)
 	ON_COMMAND(ID_EVALNEW, &CDFMDlg::OnEvalnew)
 	ON_MESSAGE(WM_DELETEDATA,&CDFMDlg::OnDeleteData)
 	ON_MESSAGE(WM_UPDATELIST,&CDFMDlg::OnUpdateList)
+	ON_MESSAGE(WM_EVALIN,&CDFMDlg::OnEvalIn)
 	ON_COMMAND(IDC_MODELNEW, &CDFMDlg::OnEvalnew)//新建评分按钮相应
 END_MESSAGE_MAP()
 
@@ -390,7 +391,7 @@ void CDFMDlg::OnMenuLogin()
 }
 
 
-
+//自定义消息删除某一条产品信息
 LRESULT CDFMDlg::OnDeleteData(WPARAM wParam,LPARAM lParam)
 {
 	m_ProductInfoList.DeleteItem(wParam);
@@ -413,12 +414,32 @@ LRESULT CDFMDlg::OnDeleteData(WPARAM wParam,LPARAM lParam)
 	return 0;
 }
 
+
+//自定义消息刷新list
 LRESULT CDFMDlg::OnUpdateList(WPARAM wParam,LPARAM lParam)
 {
 	UpdateListCtrl();
 	return 0;
 }
 
+//自定义消息进入评价
+LRESULT CDFMDlg::OnEvalIn(WPARAM wParam,LPARAM lParam)
+{
+	CProductNewDlg dlg;
+	CString str;
+	str=m_ProductInfoList.GetItemText(wParam,1);
+	dlg.strProductID=str;   //获取产品信息ID
+	dlg.bInfoWrited=true;   //右键菜单重新编辑，产品信息已写入
+	dlg.DoModal();
+	return 0;
+}
+
+
+
+
+
+
+//关于对话框
 void CDFMDlg::OnMenuAbout()
 {
 	// TODO: Add your command handler code here
@@ -426,7 +447,7 @@ void CDFMDlg::OnMenuAbout()
 	dlg.DoModal();
 }
 
-
+//修改密码
 void CDFMDlg::OnMenuPsw()
 {
 	// TODO: Add your command handler code here
@@ -436,7 +457,7 @@ void CDFMDlg::OnMenuPsw()
 
 
 
-
+//新建评价
 void CDFMDlg::OnEvalnew()
 {
 	// TODO: Add your command handler code here

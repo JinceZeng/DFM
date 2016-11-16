@@ -15,12 +15,12 @@ IMPLEMENT_DYNAMIC(CProductStep2Dlg, CDialogEx)
 CProductStep2Dlg::CProductStep2Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CProductStep2Dlg::IDD, pParent)
 {
-	str_AllItem.clear();
+	m_ListCtrlItem.clear();
 }
 
 CProductStep2Dlg::~CProductStep2Dlg()
 {
-	vector<vector<CString>>().swap(str_AllItem);
+	vector<CMatChartItem>().swap(m_ListCtrlItem);
 }
 
 void CProductStep2Dlg::DoDataExchange(CDataExchange* pDX)
@@ -66,6 +66,7 @@ BOOL CProductStep2Dlg::OnInitDialog()
 	nNoEdit.push_back(3);
 	nNoEdit.push_back(4);  
 	m_MatInfoList.SetnNoEditList(nNoEdit);
+	vector<int>().swap(nNoEdit);//释放vector
 
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -119,13 +120,11 @@ void CProductStep2Dlg::OnBnClickedInputmat()
 		}
 	}
 	ReadMatChart(str,0 , false);
-	SetListItem(str_AllItem);
 }
 
 
 void CProductStep2Dlg::ReadMatChart(CString excelFile,int sheetIndex,bool header)
 {
-
 	if(FAILED(::CoInitialize(NULL))) return;
 
 	_ConnectionPtr pCon = NULL;
@@ -180,24 +179,27 @@ void CProductStep2Dlg::ReadMatChart(CString excelFile,int sheetIndex,bool header
 		AfxMessageBox(temp);
 	}
 
-
-	vector<CString> str_OneItem;
-	str_AllItem.clear();
-	int cellCount = 0;
+	vector<vector<CString>> str_AllItem;     //用于临时存储excel表信息
+	vector<CString> str_OneItem;    //临时存储excel表中的每行的数据
+	//int cellCount = 0;
 	while(!pSchema->adoEOF)
 	{
-		str_OneItem.clear();
 		for(long i = 0; i < pSchema->GetFields()->GetCount(); ++i)
 		{    
 			CString str;
 			_variant_t var = pSchema->GetFields()->GetItem(i)->Value;
 			if(var.vt!=VT_NULL) str=(LPCSTR)(_bstr_t)(var);
 			str_OneItem.push_back(str);
-			++cellCount;
+			//++cellCount;
 		}
 		str_AllItem.push_back(str_OneItem);
+		vector<CString>().swap(str_OneItem);//释放掉
+
 		pSchema->MoveNext();
 	}
+	SetListItem(str_AllItem);     //设置list条目
+
+	vector<vector<CString>>().swap(str_AllItem);
 }
 
 
@@ -205,18 +207,72 @@ void CProductStep2Dlg::ReadMatChart(CString excelFile,int sheetIndex,bool header
 void CProductStep2Dlg::SetListItem(vector<vector<CString>>& str_AllItem)
 {
 	m_MatInfoList.DeleteAllItems();
+	CMatChartItem m_OneItem;//每条list的信息
+
 	for (int i=3,n=0;i<str_AllItem.size()-1;i++)       //插入数据一般从第四行开始
 	{
 		CString strItem;
 		strItem.Format(CString("%d"),n+1);
 
-		if(str_AllItem[i][3]==CString("")) continue;
-		m_MatInfoList.InsertItem(n,strItem);              //数据取法和明细表的格式有关
-		m_MatInfoList.SetItemText(n,1,str_AllItem[i][3]); 
-		m_MatInfoList.SetItemText(n,2,str_AllItem[i][5]);
-		m_MatInfoList.SetItemText(n,3,str_AllItem[i][7]);
-		m_MatInfoList.SetItemText(n,4,str_AllItem[i][8]);
+		//保存表的每条信息
+		m_OneItem.nItem=strItem;
+		m_OneItem.m_MatNum=str_AllItem[i][3];
+		m_OneItem.m_MatNam=str_AllItem[i][5];
+		m_OneItem.m_MatAmount=str_AllItem[i][7];
+		m_OneItem.m_MatRemark=str_AllItem[i][8];
+
+
+		if(str_AllItem[i][3]==CString("")) continue;      //判别稀疏项
+
+		m_MatInfoList.InsertItem(n,m_OneItem.nItem);              //数据取法和明细表的格式有关
+		m_MatInfoList.SetItemText(n,1,m_OneItem.m_MatNum); //代号
+		m_MatInfoList.SetItemText(n,2,m_OneItem.m_MatNam); //名称
+		m_MatInfoList.SetItemText(n,3,m_OneItem.m_MatAmount); //数量
+		m_MatInfoList.SetItemText(n,4,m_OneItem.m_MatRemark); //备注
+
 
 		++n;
+
+		m_ListCtrlItem.push_back(m_OneItem);
 	}
+	MatchMatVal(m_ListCtrlItem);  //匹配分值
+}
+
+void CProductStep2Dlg::MatchMatVal(vector<CMatChartItem>& m_ListCtrlItem)
+{
+	_RecordsetPtr m_pRs;
+	vector<vector<CString>> m_MatMatchInfo;       //数据库中的匹配信息
+	CString sql = CString("select * from Material");
+	m_pRs = theApp.m_pConnect->Execute(_bstr_t(sql), NULL, adCmdText);
+	while (!m_pRs->adoEOF)
+	{
+		vector<CString> vtemp;
+		CString str_Num = (CString)(m_pRs->GetCollect("Mnum")); 
+		CString str_DeductVal = (CString)(m_pRs->GetCollect("DeductVal")); 
+
+		vtemp.push_back(str_Num);
+		vtemp.push_back(str_DeductVal);
+
+		m_MatMatchInfo.push_back(vtemp);
+		vector<CString>().swap(vtemp);
+
+		m_pRs->MoveNext();
+	}
+
+	//匹配得分
+	for (int i=0;i<m_ListCtrlItem.size();++i)
+	{
+		for (int j=0;j<m_MatMatchInfo.size();++j)
+		{
+			if(m_ListCtrlItem[i].m_MatNum==m_MatMatchInfo[j][0]) 
+			{
+				m_ListCtrlItem[i].m_MatScore=m_MatMatchInfo[j][1];
+				break;
+			}
+			m_ListCtrlItem[i].m_MatScore=CString("0");  //若匹配不到则不扣分
+		}
+		
+	}
+
+	vector<vector<CString>>().swap(m_MatMatchInfo);
 }

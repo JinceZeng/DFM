@@ -42,7 +42,7 @@ public:
 	vector<CString> m_Lvl3TechID;              //第三层工艺指标ID
 	vector<vector<CString>> m_IndexValInfo;    //存储指标评分的评分项和对应分值，用于之后匹配（依次访问数据库会引起堆栈崩溃） 
 	vector<CTechChartItem> m_ListCtrlItem;     //存储List条目
-	vector<CString> m_IndexInfo;               //存储指标评价说明
+	vector<CString> m_IndexInfo;               //存储指标评价的编辑框显示说明
 	CIndexInfo1Dlg *pDlg;                      //用于创建非模态对话框               
 
 	void ReadTechChart(CProductInfo &m_ProductInfo);              //读取工艺表

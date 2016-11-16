@@ -1,5 +1,7 @@
 #pragma once
-
+#define WM_DELETEDATA WM_USER+2    //删除某一条产品信息
+#define WM_UPDATELIST WM_USER+3    //刷新list
+#define WM_EVALIN WM_USER+9        //进入评价
 
 // CPInfoListCtrl
 

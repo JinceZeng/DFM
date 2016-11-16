@@ -21,7 +21,7 @@ public:
 	CDFMApp();
 	CString pwd;
 	CString name;
-	_ConnectionPtr m_pConnect;
+	_ConnectionPtr m_pConnect;//用于access的连接
 
 // 重写
 public:

@@ -1,5 +1,6 @@
 #pragma once
 #include "afxcmn.h"
+#include "goldata.h"
 #include "TechValListCtrl.h"
 
 // CProductStep2Dlg dialog
@@ -28,13 +29,18 @@ public:
 
 	///////////////////////当前页进入上一页（由CListCtrl能自动保存信息，所以只需在 OnWizardNext保存信息传递到下一页）
 	DWORD OnWizardPrevious();   //可以检验上一步工作不用保存
+
 	CTechValListCtrl m_MatInfoList;
+	vector<CMatChartItem> m_ListCtrlItem;//存储List条目
+
+
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedInputmat();//导入材料表
 
 	//用于连接Excel
 	void ReadMatChart(CString excelFile,int sheetIndex,bool header);//读取excel表
-	vector<vector<CString>> str_AllItem;//用于存储excel表信息
-	void SetListItem(vector<vector<CString>>& str_AllItem);//设置list条目
+
+	void SetListItem(vector<vector<CString>>& str_AllItem);         //设置list条目
+	void MatchMatVal(vector<CMatChartItem>& m_ListCtrlItem);                 //匹配材料得分
 
 };

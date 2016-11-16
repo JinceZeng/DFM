@@ -6,6 +6,8 @@
 #define WM_INDEXMATCH WM_USER+5     //特殊评分项的匹配操作
 #define WM_SETINDEXINFO WM_USER+6   //设置指标评分说明
 #define WM_COMBOSEARCH WM_USER+8    //下拉单字符查找
+#define WM_DETELE_INDEXITEM WM_USER+10    //删除某条评价指标
+#define WM_ADD_INDEXITEM WM_USER+11    //添加某条评价指标
 
 
 #include <vector>
@@ -60,7 +62,7 @@ public:
 	afx_msg void OnCbnSelchange();                         //结束编辑
 	void InitCombo(vector<CString>& lisStr);               //初始化组合框列表,动态变化是个麻烦事
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	//afx_msg void OnCbnKillfocus();                         //失去焦点后结束编辑
+	//afx_msg void OnCbnKillfocus();                   //失去焦点后结束编辑
 	afx_msg void OnCbnEditchange();                    //combo编辑改变后响应
 };
 
@@ -116,6 +118,9 @@ public:
 	void SetComboString(vector<CString>& lisStr);   //设置第nItem行组合框字符串
 
 
+	afx_msg void OnNMRClick(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnMenuAdditem();
+	afx_msg void OnDeteteItem3();
 };
 
 

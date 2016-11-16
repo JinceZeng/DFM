@@ -383,6 +383,7 @@ void CProductNewDlg::ShowPage(UINT nPos)
 		case 5:
 			if(((CProductStep5Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)
 				return;
+			((CProductStep6Dlg*)m_pPageList[nPos])->ReadTechChart();
 			((CProductStep6Dlg*)m_pPageList[nPos])->OnWizardActive();
 			break;
 		default:

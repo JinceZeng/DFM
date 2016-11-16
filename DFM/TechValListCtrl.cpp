@@ -35,11 +35,45 @@ CTechValListCtrl::~CTechValListCtrl()
 BEGIN_MESSAGE_MAP(CTechValListCtrl, CListCtrl)
 	ON_WM_LBUTTONDOWN()
 	ON_MESSAGE(WM_COMBOSEARCH,&CTechValListCtrl::OnComboSearch)
+	ON_NOTIFY_REFLECT(NM_RCLICK, &CTechValListCtrl::OnNMRClick)
+	ON_COMMAND(ID_MENU_ADDITEM, &CTechValListCtrl::OnMenuAdditem)
+	ON_COMMAND(ID_DETETE_ITEM3, &CTechValListCtrl::OnDeteteItem3)
 END_MESSAGE_MAP()
 
 
 
 // CTechValListCtrl message handlers
+
+//右键菜单
+void CTechValListCtrl::OnNMRClick(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: Add your control notification handler code here
+	*pResult = 0;
+
+	CPoint pt=pNMItemActivate->ptAction;
+	CMenu menu;       // 菜单（包含主菜单栏和子菜单）   
+	CMenu *pSubMenu;  // 右键菜单 
+	menu.LoadMenu(IDR_LISTCTRL4);   
+	pSubMenu = menu.GetSubMenu(0);      
+	ClientToScreen(&pt);   
+	pSubMenu->TrackPopupMenu(TPM_LEFTALIGN, pt.x, pt.y, this);
+}
+//添加指标评分项
+void CTechValListCtrl::OnMenuAdditem()
+{
+	// TODO: Add your command handler code here
+	::SendMessageA(GetParent()->m_hWnd,WM_ADD_INDEXITEM,0,0); //进行添加操作
+
+}
+
+void CTechValListCtrl::OnDeteteItem3()
+{
+	// TODO: Add your command handler code here
+	::SendMessageA(GetParent()->m_hWnd,WM_DETELE_INDEXITEM,0,0); //进行删除操作
+
+}
+
 
 void CTechValListCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 {
@@ -539,5 +573,12 @@ void CMyCombo1::OnCbnEditchange()
 	// TODO: Add your control notification handler code here
 	::SendMessageA(GetParent()->m_hWnd,WM_COMBOSEARCH,0,0);
 }
+
+
+
+
+
+
+
 
 

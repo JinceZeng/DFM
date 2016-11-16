@@ -29,6 +29,25 @@ struct CTechChartItem //工艺表的每条数据
 	CString m_Classify;             //类别
 	CString m_TechEvalIndex;        //工艺评价指标
 	vector<CString> m_ValComboStr;  //评分下拉菜单对应的所有字符
+	CString m_ComboStrChoose;       //所选择的combo字符
 	CString m_IndexScore;           //指标得分
 
+};
+
+struct CMatChartItem //材料表的每条数据
+{
+	CString nItem;               //位号
+	CString m_MatNum;            //代号
+	CString m_MatNam;            //名称
+	CString m_MatAmount;         //数量
+	CString m_MatRemark;         //备注
+	CString m_MatScore;          //材料评分
+};
+
+struct CMaturyChartItem //工艺成熟表的每条数据
+{
+	CString nItem;              //序号
+	CString m_TechNam;          //工艺名
+	CString m_TechMaturyVal;    //工艺成熟评分
+	CString m_TechUseStatus;    //工艺使用状态
 };

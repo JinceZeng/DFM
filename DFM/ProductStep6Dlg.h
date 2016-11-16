@@ -1,6 +1,7 @@
 #pragma once
-
-
+#include "goldata.h"
+#include "afxcmn.h"
+#include "TechValListCtrl.h"
 // CProductStep6Dlg dialog
 
 class CProductStep6Dlg : public CDialogEx
@@ -27,4 +28,15 @@ public:
 
 	///////////////////////当前页进入上一页（由CListCtrl能自动保存信息，所以只需在 OnWizardNext保存信息传递到下一页）
 	DWORD OnWizardPrevious();   //可以检验上一步工作不用保存
+	virtual BOOL OnInitDialog();
+	CTechValListCtrl m_TechMaturyList;
+	vector<vector<CString>> m_TechMaturityInfo; //存储工艺成熟度所有信息   
+	vector<CString> m_TechType;                 //存储表中工艺类型，用于combo初始化
+	vector<CMaturyChartItem> m_ListCtrlItem;    //存储List条目
+
+	afx_msg LRESULT OnDeleteIndexItem(WPARAM wParam,LPARAM lParam); //删除某条评价指标
+	afx_msg LRESULT OnAddIndexItem(WPARAM wParam,LPARAM lParam);//添加某条评价指标
+	afx_msg LRESULT OnSetIndexVal(WPARAM wParam,LPARAM lParam);//设置指标得分
+
+	void ReadTechChart();              //读取工艺成熟表
 };

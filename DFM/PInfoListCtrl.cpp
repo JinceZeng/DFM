@@ -94,7 +94,7 @@ void CPInfoListCtrl::OnNMRClick(NMHDR *pNMHDR, LRESULT *pResult)
 
 
 
-
+//右键菜单删除1
 void CPInfoListCtrl::OnDeteteItem1()
 {
 	// TODO: Add your command handler code here
@@ -103,7 +103,7 @@ void CPInfoListCtrl::OnDeteteItem1()
 	::SendMessage(GetParent()->m_hWnd,WM_DELETEDATA,m_nItem,(LPARAM)(LPCTSTR)strID);
 }
 
-
+//右键菜单删除2
 void CPInfoListCtrl::OnDeteteItem2()
 {
 	// TODO: Add your command handler code here
@@ -112,19 +112,15 @@ void CPInfoListCtrl::OnDeteteItem2()
 	::SendMessage(GetParent()->m_hWnd,WM_DELETEDATA,m_nItem,(LPARAM)(LPCTSTR)strID);
 }
 
-
+//右键菜单评价
 void CPInfoListCtrl::OnMenuEvalin()
 {
 	// TODO: Add your command handler code here
-	CProductNewDlg dlg;
-	CString str;
-	str=GetItemText(m_nItem,1);
-	dlg.strProductID=str;   //获取产品信息ID
-	dlg.bInfoWrited=true;   //右键菜单重新编辑，产品信息已写入
-	dlg.DoModal();
+	::SendMessage(GetParent()->m_hWnd,WM_EVALIN,m_nItem,0);
+
 }
 
-
+//右键菜单刷新
 void CPInfoListCtrl::OnMenuUpdatelist()
 {
 	// TODO: Add your command handler code here

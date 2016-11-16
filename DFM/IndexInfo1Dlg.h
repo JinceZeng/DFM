@@ -1,7 +1,7 @@
 #pragma once
 //#define WM_DELETEPDLG WM_USER+7 
 // CIndexInfo1Dlg dialog
-
+//////////////////////////////////////////用于加载图片说明
 class CIndexInfo1Dlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CIndexInfo1Dlg)
