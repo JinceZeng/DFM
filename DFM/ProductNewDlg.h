@@ -3,6 +3,12 @@
 #include <vector>
 using std::vector;
 
+//矩阵运算库eigen3.3
+#include <Eigen/Dense>
+using namespace std;
+using namespace Eigen;
+
+
 #include "ProductStep0Dlg.h"
 #include "ProductStep1Dlg.h"
 #include "ProductStep2Dlg.h"
@@ -10,6 +16,7 @@ using std::vector;
 #include "ProductStep4Dlg.h"
 #include "ProductStep5Dlg.h"
 #include "ProductStep6Dlg.h"
+#include "SetWeighDlg.h"
 #include "ProductOutDlg.h"
 #include "btnst.h"
 
@@ -43,6 +50,7 @@ public:
 	void ShowPage(UINT nPos);         //显示nPos页面从0开始索引
 	void SetWizButton(UINT nPos);     //根据页面情况设置按钮状态
 	void SetTextShow(UINT nPos);      //根据页面情况设置文本显示 
+
 	afx_msg void OnBnClickedEvalpre();   //前一步
 	afx_msg void OnBnClickedEvalnext();  //下一步
 	afx_msg void OnBnClickedEvalin();    //进入评价
@@ -56,4 +64,14 @@ public:
 	CButtonST m_btnChart4;
 	CButtonST m_btnChart5;
 	CButtonST m_btnChart6;
+
+
+	//计算相关
+	void GetIndexVal(VectorXd& dA1,VectorXd& dA2);                   //获取指标评分
+	double MinVal(vector<double>& IndexVal);  //取最小扣分
+	RowVectorXd m_dB1; //技术指标和经济指标分别对评价集的隶属度
+	RowVectorXd m_dB2; //技术指标各子指标对评价集的隶属度
+	VectorXd m_dC1; //一级指标评分值
+	VectorXd m_dC2; //二级指标评分值
+	double m_W;//最终评分值
 };

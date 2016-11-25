@@ -158,7 +158,7 @@ BOOL CProductNewDlg::OnInitDialog()
 	CProductStep4Dlg *pStep4=new CProductStep4Dlg();
 	if(pStep4==NULL)
 	{
-		MessageBox(_T("页面3创建失败"));
+		MessageBox(_T("页面4创建失败"));
 		AfxAbort();
 	}
 
@@ -173,7 +173,7 @@ BOOL CProductNewDlg::OnInitDialog()
 	CProductStep5Dlg *pStep5=new CProductStep5Dlg();
 	if(pStep5==NULL)
 	{
-		MessageBox(_T("页面3创建失败"));
+		MessageBox(_T("页面5创建失败"));
 		AfxAbort();
 	}
 
@@ -188,7 +188,7 @@ BOOL CProductNewDlg::OnInitDialog()
 	CProductStep6Dlg *pStep6=new CProductStep6Dlg();
 	if(pStep6==NULL)
 	{
-		MessageBox(_T("页面3创建失败"));
+		MessageBox(_T("页面6创建失败"));
 		AfxAbort();
 	}
 
@@ -287,6 +287,12 @@ void CProductNewDlg::OnBnClickedEvalnext()
 void CProductNewDlg::OnBnClickedEvalin()
 {
 	// TODO: Add your control notification handler code here
+	CSetWeighDlg dlg;
+	dlg.ReadTechChart(((CProductStep0Dlg*)m_pPageList[0])->m_ProductInfo);//先读取表信息
+	if(dlg.DoModal()==IDOK)
+	{
+		GetIndexVal(dlg.m_dA1,dlg.m_dA2);
+	}
 }
 
 
@@ -520,4 +526,125 @@ void CProductNewDlg::SetTextShow(UINT nPos)
 		m_btnChart6.SetColor(CButtonST::BTNST_COLOR_FG_OUT, RGB(0, 0, 0));
 		break;
 	}
+}
+
+
+
+
+///////////////////////////////////////////模糊层次分析法计算相关
+void CProductNewDlg::GetIndexVal(VectorXd& dA1,VectorXd& dA2)
+{
+	/////////////将评分表中获取的cstring评分值转化为double
+	int n1,n2,n3,n4,n5,n6;
+	n1=((CProductStep1Dlg*)m_pPageList[1])->m_ListCtrlItem.size();
+	n2=((CProductStep2Dlg*)m_pPageList[2])->m_ListCtrlItem.size();
+	n3=((CProductStep3Dlg*)m_pPageList[3])->m_ListCtrlItem.size();
+	n4=((CProductStep4Dlg*)m_pPageList[4])->m_ListCtrlItem.size();
+	n5=((CProductStep5Dlg*)m_pPageList[5])->m_ListCtrlItem.size();
+	n6=((CProductStep6Dlg*)m_pPageList[6])->m_ListCtrlItem.size();
+	vector<double> TechIndexVal,MatInfoVal,ImpactVibVal,ThreeProVal,EconomyVal,TechMaturyVal;
+
+	for(int i=0;i<n1;++i)
+	{
+		TechIndexVal.push_back(_ttol(((CProductStep1Dlg*)m_pPageList[1])->m_ListCtrlItem[i].m_IndexScore));     //cstring转double
+
+	}
+	for(int i=0;i<n2;++i)
+	{
+		MatInfoVal.push_back(_ttol(((CProductStep2Dlg*)m_pPageList[2])->m_ListCtrlItem[i].m_MatScore));     //cstring转double
+
+	}
+	for(int i=0;i<n3;++i)
+	{
+		ImpactVibVal.push_back(_ttol(((CProductStep3Dlg*)m_pPageList[3])->m_ListCtrlItem[i].m_IndexScore));     //cstring转double
+
+	}
+	for(int i=0;i<n4;++i)
+	{
+		ThreeProVal.push_back(_ttol(((CProductStep4Dlg*)m_pPageList[4])->m_ListCtrlItem[i].m_IndexScore));     //cstring转double
+
+	}
+	for(int i=0;i<n5;++i)
+	{
+		EconomyVal.push_back(_ttol(((CProductStep5Dlg*)m_pPageList[5])->m_ListCtrlItem[i].m_IndexScore));     //cstring转double
+
+	}
+	for(int i=0;i<n6;++i)
+	{
+		TechMaturyVal.push_back(_ttol(((CProductStep6Dlg*)m_pPageList[6])->m_ListCtrlItem[i].m_TechMaturyVal));     //cstring转double
+
+	}
+	double c1,c2,c3,c4,c5,c6;
+	c1=MinVal(TechMaturyVal);    //成熟度直接评分，其余选择最低扣分项间接评分
+	c2=3+MinVal(TechIndexVal);
+	c3=3+MinVal(ThreeProVal);
+	c4=3+MinVal(ImpactVibVal);
+	c5=3+MinVal(MatInfoVal);
+	c6=3+MinVal(EconomyVal);
+
+	vector<double>().swap(TechMaturyVal);//释放vector
+	vector<double>().swap(TechIndexVal);
+	vector<double>().swap(ThreeProVal);
+	vector<double>().swap(ImpactVibVal);
+	vector<double>().swap(MatInfoVal);
+	vector<double>().swap(EconomyVal);
+
+
+	//保存二级指标评分
+	VectorXd vTemp1(6);
+	vTemp1<<c1,c2,c3,c4,c5,c6;
+	m_dC2=vTemp1;
+
+	VectorXd dC2(5);      //用于构造模糊矩阵
+	dC2<<c1,c2,c3,c4,c5;
+
+	///////////////////////////////////////通过评分按0-1型的隶属函数构建模糊矩阵
+	MatrixXd dR2(dC2.size(),4); //评价集项为四个，即0，1，2，3
+	VectorXd dV(4);
+	dV<<0,1,2,3;
+	for(int i=0;i<dR2.rows();++i)
+	{
+		for (int j=0;j<dR2.cols();++j)
+		{
+			if(dC2[i]==dV[j]) dR2(i,j)=1;
+			else dR2(i,j)=0;
+		}
+	}
+	m_dB2=dA2.transpose()*dR2;//技术指标各子指标对评价集的隶属度
+	double cc1=m_dB2*dV;//技术指标的最终评分
+	double cc2=c6;      //因为经济指标只有一个子指标，故评分直接为该指标评分
+
+	//保存一级指标评分
+	VectorXd vTemp2(2);
+	vTemp2<<cc1,cc2;
+	m_dC1=vTemp2;
+
+
+	//构建上级模糊矩阵
+	MatrixXd dR1(2,4);
+	for (int i=0;i<dR1.rows();++i)
+	{
+		for (int j=0;j<dR1.cols();++j)
+		{
+			if(i==0) dR1(i,j)=m_dB2[j];
+			else if(cc2==dV[j]) dR1(i,j)=1;
+			else dR1(i,j)=0;
+		}
+	}
+	m_dB1=dA1.transpose()*dR1; //技术指标和经济指标分别对评价集的隶属度
+	m_W=m_dB1*dV;  //最终评分值
+}
+
+
+
+double CProductNewDlg::MinVal(vector<double>& IndexVal)
+{
+	double dMin=3.0;
+	for (int i=0;i<IndexVal.size();++i)
+	{
+		if (IndexVal[i]<dMin)
+			dMin=IndexVal[i];
+		
+	}
+	return dMin;
 }
