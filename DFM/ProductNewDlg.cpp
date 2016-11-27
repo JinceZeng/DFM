@@ -34,6 +34,12 @@ CProductNewDlg::~CProductNewDlg()
 	vector<CDialogEx*>().swap(m_pPageList);//清除容器并最小化它的容量
 
 	//delete m_csCaption;             //释放cstatic指针内存
+	vector<CString>().swap(m_ItemVal);
+	vector<CString>().swap(m_Lvl1TechNam);
+	vector<vector<CString>>().swap(m_Lvl2TechNam);
+	vector<CLowValItem>().swap(m_LowValItem);
+	vector<CIndexValItem>().swap(m_IndexVal);
+
 }
 
 void CProductNewDlg::DoDataExchange(CDataExchange* pDX)
@@ -287,12 +293,33 @@ void CProductNewDlg::OnBnClickedEvalnext()
 void CProductNewDlg::OnBnClickedEvalin()
 {
 	// TODO: Add your control notification handler code here
-	CSetWeighDlg dlg;
-	dlg.ReadTechChart(((CProductStep0Dlg*)m_pPageList[0])->m_ProductInfo);//先读取表信息
-	if(dlg.DoModal()==IDOK)
+	if(((CProductStep6Dlg*)m_pPageList[6])->m_ListCtrlItem.size()==0)
 	{
-		GetIndexVal(dlg.m_dA1,dlg.m_dA2);
+		AfxMessageBox(CString("请添加使用工艺"));
+		return;
 	}
+	else
+	{
+		((CProductStep6Dlg*)m_pPageList[6])->SaveLowValItem();//先保存表6低分项
+
+		CSetWeighDlg dlg;
+		dlg.ReadTechChart(((CProductStep0Dlg*)m_pPageList[0])->m_ProductInfo);//先读取表信息
+		if(dlg.DoModal()==IDOK)
+		{
+			GetIndexVal(dlg.m_dA1,dlg.m_dA2);
+			m_Lvl1TechNam=dlg.m_Lvl1TechNam;     //传递各级指标名
+			m_Lvl2TechNam=dlg.m_Lvl2TechNam;
+
+			//结果输出
+			SaveResultInfo();    //给m_LowValItem、m_IndexVal赋值
+			CProductOutDlg dlg1;
+			dlg1.GetItemInfo(SetResultVal());
+			dlg1.GetResultInfo(m_LowValItem,m_IndexVal);
+			dlg1.DoModal();
+		}
+	}
+
+
 }
 
 
@@ -531,7 +558,7 @@ void CProductNewDlg::SetTextShow(UINT nPos)
 
 
 
-///////////////////////////////////////////模糊层次分析法计算相关
+///////////////////////////////////////////////////////////////////模糊层次分析法计算相关
 void CProductNewDlg::GetIndexVal(VectorXd& dA1,VectorXd& dA2)
 {
 	/////////////将评分表中获取的cstring评分值转化为double
@@ -610,7 +637,7 @@ void CProductNewDlg::GetIndexVal(VectorXd& dA1,VectorXd& dA2)
 			else dR2(i,j)=0;
 		}
 	}
-	m_dB2=dA2.transpose()*dR2;//技术指标各子指标对评价集的隶属度
+	m_dB2=dA2.transpose()*dR2;//技术指标对评价集的隶属度
 	double cc1=m_dB2*dV;//技术指标的最终评分
 	double cc2=c6;      //因为经济指标只有一个子指标，故评分直接为该指标评分
 
@@ -631,7 +658,7 @@ void CProductNewDlg::GetIndexVal(VectorXd& dA1,VectorXd& dA2)
 			else dR1(i,j)=0;
 		}
 	}
-	m_dB1=dA1.transpose()*dR1; //技术指标和经济指标分别对评价集的隶属度
+	m_dB1=dA1.transpose()*dR1; //评价整体对评价集的隶属度
 	m_W=m_dB1*dV;  //最终评分值
 }
 
@@ -647,4 +674,139 @@ double CProductNewDlg::MinVal(vector<double>& IndexVal)
 		
 	}
 	return dMin;
+}
+
+
+
+/////////////////////////结果输出相关
+vector<CString>& CProductNewDlg::SetResultVal()
+{
+	//评价最终可制造性
+	m_ItemVal.clear();
+
+	CString strEvalResult;
+	if (m_W>=0&&m_W<1.5)
+		strEvalResult=CString("可制造性差");
+	else if(m_W>=1.5&&m_W<2.5)
+		strEvalResult=CString("可制造性一般");
+	else 
+		strEvalResult=CString("可制造性好");
+
+	m_ItemVal.push_back(((CProductStep0Dlg*)m_pPageList[0])->m_ProductName);  //产品名称
+	m_ItemVal.push_back(((CProductStep0Dlg*)m_pPageList[0])->m_ProductNum);   //产品编号
+	m_ItemVal.push_back(strEvalResult);   //综合评价结果
+	m_ItemVal.push_back(CString("双击显示详细信息"));   //低分项及改进显示
+	m_ItemVal.push_back(CString("双击显示详细信息"));   //指标得分值显示
+
+	return m_ItemVal;
+}
+
+
+
+
+//给m_LowValItem、m_IndexVal赋值,用于结果显示
+void CProductNewDlg::SaveResultInfo()
+{
+	//综合保存低分项
+	m_LowValItem.clear();
+	m_IndexVal.clear();
+
+	int nLowValItemNum=1; 
+	for (int i=0;i<((CProductStep1Dlg*)m_pPageList[1])->m_LowValItem.size();++i)
+	{
+		CString str;
+		str.Format(CString("%d"),nLowValItemNum);
+		CLowValItem OneItem;
+		OneItem=((CProductStep1Dlg*)m_pPageList[1])->m_LowValItem[i];
+		OneItem.m_Item=str;  //序号重新赋值
+		m_LowValItem.push_back(OneItem);
+		++nLowValItemNum;
+	}
+	for (int i=0;i<((CProductStep2Dlg*)m_pPageList[2])->m_LowValItem.size();++i)
+	{
+		CString str;
+		str.Format(CString("%d"),nLowValItemNum);
+		CLowValItem OneItem;
+		OneItem=((CProductStep2Dlg*)m_pPageList[2])->m_LowValItem[i];
+		OneItem.m_Item=str;  //序号重新赋值
+		m_LowValItem.push_back(OneItem);
+		++nLowValItemNum;
+	}
+	for (int i=0;i<((CProductStep3Dlg*)m_pPageList[3])->m_LowValItem.size();++i)
+	{
+		CString str;
+		str.Format(CString("%d"),nLowValItemNum);
+		CLowValItem OneItem;
+		OneItem=((CProductStep3Dlg*)m_pPageList[3])->m_LowValItem[i];
+		OneItem.m_Item=str;  //序号重新赋值
+		m_LowValItem.push_back(OneItem);
+		++nLowValItemNum;
+	}
+	for (int i=0;i<((CProductStep4Dlg*)m_pPageList[4])->m_LowValItem.size();++i)
+	{
+		CString str;
+		str.Format(CString("%d"),nLowValItemNum);
+		CLowValItem OneItem;
+		OneItem=((CProductStep4Dlg*)m_pPageList[4])->m_LowValItem[i];
+		OneItem.m_Item=str;  //序号重新赋值
+		m_LowValItem.push_back(OneItem);
+		++nLowValItemNum;
+	}
+	for (int i=0;i<((CProductStep5Dlg*)m_pPageList[5])->m_LowValItem.size();++i)
+	{
+		CString str;
+		str.Format(CString("%d"),nLowValItemNum);
+		CLowValItem OneItem;
+		OneItem=((CProductStep5Dlg*)m_pPageList[5])->m_LowValItem[i];
+		OneItem.m_Item=str;  //序号重新赋值
+		m_LowValItem.push_back(OneItem);
+		++nLowValItemNum;
+	}
+	for (int i=0;i<((CProductStep6Dlg*)m_pPageList[6])->m_LowValItem.size();++i)
+	{
+		CString str;
+		str.Format(CString("%d"),nLowValItemNum);
+		CLowValItem OneItem;
+		OneItem=((CProductStep6Dlg*)m_pPageList[6])->m_LowValItem[i];
+		OneItem.m_Item=str;  //序号重新赋值
+		m_LowValItem.push_back(OneItem);
+		++nLowValItemNum;
+	}
+
+	//保存一二级指标评分
+	int nIndexValItemNum=1;
+	for (int i=0;i<m_Lvl1TechNam.size();++i)
+	{
+		CString strIndexVal,strIndexValItemNum;
+		strIndexValItemNum.Format(CString("%d"),nIndexValItemNum);
+		strIndexVal.Format(CString("%.2f"),m_dC1[i]);
+
+		CIndexValItem OneItem;
+		OneItem.m_Item=strIndexValItemNum;
+		OneItem.m_IndexNam=m_Lvl1TechNam[i];
+		OneItem.m_IndexVal=strIndexVal;
+
+		m_IndexVal.push_back(OneItem);
+		++nIndexValItemNum;
+	}
+
+
+	int k=0;//记录赋值次数
+	for (int i=0;i<m_Lvl2TechNam.size();++i)
+	{
+		for (int j=0;j<m_Lvl2TechNam[i].size();++j)
+		{
+			CString strIndexVal,strIndexValItemNum;
+			strIndexValItemNum.Format(CString("%d"),nIndexValItemNum);
+			strIndexVal.Format(CString("%.2f"),m_dC2[k]);
+
+			CIndexValItem OneItem;
+			OneItem.m_Item=strIndexValItemNum;
+			OneItem.m_IndexNam=m_Lvl2TechNam[i][j];
+			OneItem.m_IndexVal=strIndexVal;
+
+			m_IndexVal.push_back(OneItem);
+			++nIndexValItemNum,++k;
+		}
+	}
 }

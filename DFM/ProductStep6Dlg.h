@@ -34,6 +34,11 @@ public:
 	vector<CString> m_TechType;                 //存储表中工艺类型，用于combo初始化
 	vector<CMaturyChartItem> m_ListCtrlItem;    //存储List条目
 
+	vector<CLowValItem> m_LowValItem;          //存储低分项
+	int m_LowValItemNum;                     //记录低分项条目数
+	void SaveLowValItem();   //保存低分项
+
+
 	afx_msg LRESULT OnDeleteIndexItem(WPARAM wParam,LPARAM lParam); //删除某条评价指标
 	afx_msg LRESULT OnAddIndexItem(WPARAM wParam,LPARAM lParam);//添加某条评价指标
 	afx_msg LRESULT OnSetIndexVal(WPARAM wParam,LPARAM lParam);//设置指标得分

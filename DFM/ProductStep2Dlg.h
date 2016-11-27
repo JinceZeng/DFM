@@ -33,6 +33,9 @@ public:
 	CTechValListCtrl m_MatInfoList;
 	vector<CMatChartItem> m_ListCtrlItem;//存储List条目
 
+	vector<CLowValItem> m_LowValItem;          //存储低分项
+	int m_LowValItemNum;                     //记录低分项条目数
+	void SaveLowValItem(vector<CMatChartItem>& m_ListCtrlItem);   //保存低分项
 
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedInputmat();//导入材料表
@@ -41,6 +44,8 @@ public:
 	void ReadMatChart(CString excelFile,int sheetIndex,bool header);//读取excel表
 
 	void SetListItem(vector<vector<CString>>& str_AllItem);         //设置list条目
-	void MatchMatVal(vector<CMatChartItem>& m_ListCtrlItem);                 //匹配材料得分
+	void MatchMatVal(vector<CMatChartItem>& m_ListCtrlItem);        //匹配材料得分
+
+	
 
 };

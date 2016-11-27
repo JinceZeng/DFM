@@ -114,7 +114,9 @@
     <ClInclude Include="DFMDlg.h" />
     <ClInclude Include="goldata.h" />
     <ClInclude Include="IndexInfo1Dlg.h" />
+    <ClInclude Include="IndexValChartDlg.h" />
     <ClInclude Include="LoginDlg.h" />
+    <ClInclude Include="LowValChartDlg.h" />
     <ClInclude Include="MatchChart1Dlg.h" />
     <ClInclude Include="MatchChart2Dlg.h" />
     <ClInclude Include="MatchChart3Dlg.h" />
@@ -142,7 +144,9 @@
     <ClCompile Include="DFM.cpp" />
     <ClCompile Include="DFMDlg.cpp" />
     <ClCompile Include="IndexInfo1Dlg.cpp" />
+    <ClCompile Include="IndexValChartDlg.cpp" />
     <ClCompile Include="LoginDlg.cpp" />
+    <ClCompile Include="LowValChartDlg.cpp" />
     <ClCompile Include="MatchChart1Dlg.cpp" />
     <ClCompile Include="MatchChart2Dlg.cpp" />
     <ClCompile Include="MatchChart3Dlg.cpp" />

@@ -120,6 +120,12 @@
     <ClInclude Include="SetWeighDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LowValChartDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexValChartDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DFM.cpp">
@@ -192,6 +198,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SetWeighDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LowValChartDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexValChartDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

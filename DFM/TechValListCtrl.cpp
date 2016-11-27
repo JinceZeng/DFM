@@ -118,12 +118,12 @@ void CTechValListCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 		//判断是否是匹配指标项弹出匹配框
 		isCombo=true;//每次进来都要重新赋值默认为真
 		CString strClassify=this->GetItemText(m_nItem,1);
-		if(strClassify==CString("机箱（匹配）"))
+		if(strClassify==CString("机箱（匹配）")||strClassify==CString("低分项及改进建议")||strClassify==CString("指标得分值"))  //双击弹出对话框判断
 		{
 			isCombo=false; //设定为非combo行
-			::SendMessageA(GetParent()->m_hWnd,WM_INDEXMATCH,m_nItem,0); //如果是匹配指标项发消息到父窗口，进行匹配  
+			::SendMessageA(GetParent()->m_hWnd,WM_INDEXMATCH,m_nItem,0); //匹配项的匹配
 		}
-		else ::SendMessageA(GetParent()->m_hWnd,WM_SETINDEXINFO,m_nItem,0); //如果是匹配指标项发消息到父窗口，进行匹配  
+		else ::SendMessageA(GetParent()->m_hWnd,WM_SETINDEXINFO,m_nItem,0); //编辑框提示信息的显示
 
 		//是否为组合框控制项
 		int n=m_nlisCombo.size();
@@ -216,7 +216,7 @@ BOOL CTechValListCtrl::MyBeginComboBox(void)
 
 	//如果是这两种类型的指标则创建DropDown风格的combo，用于编辑匹配字符
 	CString strClassify=this->GetItemText(m_nItem,1);
-	if (strClassify==CString("材料选择（匹配）")|strClassify==CString("表面处理（匹配）"))
+	if (strClassify==CString("材料选择（匹配）")||strClassify==CString("表面处理（匹配）"))
 	{
 		int style=WS_CHILD|WS_CLIPSIBLINGS|WS_EX_TOOLWINDOW|WS_BORDER|WS_VSCROLL|CBS_DROPDOWN;
 		if(m_ComboBox.Create(style,rect,this,ID_MYCOMBO)==FALSE)     

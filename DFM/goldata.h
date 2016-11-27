@@ -51,3 +51,28 @@ struct CMaturyChartItem //工艺成熟表的每条数据
 	CString m_TechMaturyVal;    //工艺成熟评分
 	CString m_TechUseStatus;    //工艺使用状态
 };
+
+struct CResultChartItem //评价结果表的每条数据
+{
+	CString nItem;              //序号
+	CString m_ItemNam;          //结果条目名
+	CString m_ItemVal;          //结果条目显示值
+};
+
+struct CLowValItem     //低分项结果表的每条数据
+{
+	CString m_Item;                 //序号
+	CString m_ChartNam;             //所属表名
+	CString m_Classify;             //类别
+	CString m_TechEvalIndex;        //工艺评价指标
+	CString m_IndexScore;           //指标得分
+	CString m_LowValAdvice;         //低分项建议
+
+};
+
+struct CIndexValItem
+{
+	CString m_Item;            //序号
+	CString m_IndexNam;        //指标名
+	CString m_IndexVal;        //评分值
+};

@@ -14,6 +14,7 @@ IMPLEMENT_DYNAMIC(CProductStep2Dlg, CDialogEx)
 
 CProductStep2Dlg::CProductStep2Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CProductStep2Dlg::IDD, pParent)
+	,m_LowValItemNum(0)
 {
 	m_ListCtrlItem.clear();
 }
@@ -21,6 +22,8 @@ CProductStep2Dlg::CProductStep2Dlg(CWnd* pParent /*=NULL*/)
 CProductStep2Dlg::~CProductStep2Dlg()
 {
 	vector<CMatChartItem>().swap(m_ListCtrlItem);
+	vector<CLowValItem>().swap(m_LowValItem);
+
 }
 
 void CProductStep2Dlg::DoDataExchange(CDataExchange* pDX)
@@ -79,6 +82,8 @@ DWORD CProductStep2Dlg::OnWizardActive()
 {
 	//接受信息输入，完成初始化工作
 	m_MatInfoList.DeleteAllItems();
+	m_LowValItem.clear();
+	m_LowValItemNum=0;
 	ShowWindow(SW_SHOW);
 	return 0;
 }
@@ -87,7 +92,11 @@ DWORD CProductStep2Dlg::OnWizardActive()
 //可以检验并保存当前工作,返回-1不切换，返回0切换
 DWORD CProductStep2Dlg::OnWizardNext()
 {
-
+	if (m_MatInfoList.GetItemCount()==0)
+	{
+		AfxMessageBox(CString("导入材料表未完成"));
+		return -1;
+	}
 	ShowWindow(SW_HIDE);     //暂时这样写，后期加检验判断
 	return 0;
 
@@ -206,7 +215,8 @@ void CProductStep2Dlg::ReadMatChart(CString excelFile,int sheetIndex,bool header
 
 void CProductStep2Dlg::SetListItem(vector<vector<CString>>& str_AllItem)
 {
-	m_MatInfoList.DeleteAllItems();
+	//m_MatInfoList.DeleteAllItems();
+	m_ListCtrlItem.clear();
 	CMatChartItem m_OneItem;//每条list的信息
 
 	for (int i=3,n=0;i<str_AllItem.size()-1;i++)       //插入数据一般从第四行开始
@@ -273,6 +283,32 @@ void CProductStep2Dlg::MatchMatVal(vector<CMatChartItem>& m_ListCtrlItem)
 		}
 		
 	}
-
 	vector<vector<CString>>().swap(m_MatMatchInfo);
+	SaveLowValItem(m_ListCtrlItem);//存储低分项
+}
+
+//存储低分项
+void CProductStep2Dlg::SaveLowValItem(vector<CMatChartItem>& m_ListCtrlItem)
+{
+	for (int i=0;i<m_ListCtrlItem.size();++i)
+	{
+		CString strDeductVal=m_ListCtrlItem[i].m_MatScore;//提取评分
+		CLowValItem OneLowValItem;
+		int nDeductVal= _ttoi(strDeductVal);
+		if (nDeductVal<0)
+		{
+			CString str;
+			str.Format(CString("%d"),m_LowValItemNum+1);
+			OneLowValItem.m_Item=str;
+			OneLowValItem.m_ChartNam=CString("材料表");
+			OneLowValItem.m_Classify=CString("材料");
+			OneLowValItem.m_TechEvalIndex=m_ListCtrlItem[i].m_MatNam;
+			OneLowValItem.m_IndexScore=m_ListCtrlItem[i].m_MatScore;
+			OneLowValItem.m_LowValAdvice=CString("不使用该材料");
+
+			m_LowValItem.push_back(OneLowValItem);
+
+			++m_LowValItemNum;
+		}
+	}
 }

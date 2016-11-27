@@ -43,7 +43,11 @@ public:
 	vector<vector<CString>> m_IndexValInfo;    //存储指标评分的评分项和对应分值，用于之后匹配（依次访问数据库会引起堆栈崩溃） 
 	vector<CTechChartItem> m_ListCtrlItem;     //存储List条目
 	vector<CString> m_IndexInfo;               //存储指标评价的编辑框显示说明
-	CIndexInfo1Dlg *pDlg;                      //用于创建非模态对话框（关于析构有点疑问）               
+	CIndexInfo1Dlg *pDlg;                      //用于创建非模态对话框（关于析构有点疑问）
+
+	vector<CLowValItem> m_LowValItem;          //存储低分项
+	int m_LowValItemNum;                     //记录低分项条目数
+	void SaveLowValItem(vector<CTechChartItem>& m_ListCtrlItem);   //保存低分项
 
 	void ReadTechChart(CProductInfo &m_ProductInfo);              //读取工艺表
 	void ShowListCtrl();                                          //显示评分表

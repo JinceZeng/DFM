@@ -1,7 +1,6 @@
 #pragma once
 #include "afxwin.h"
-#include <vector>
-using std::vector;
+#include "goldata.h"
 
 //矩阵运算库eigen3.3
 #include <Eigen/Dense>
@@ -67,11 +66,22 @@ public:
 
 
 	//计算相关
-	void GetIndexVal(VectorXd& dA1,VectorXd& dA2);                   //获取指标评分
-	double MinVal(vector<double>& IndexVal);  //取最小扣分
-	RowVectorXd m_dB1; //技术指标和经济指标分别对评价集的隶属度
-	RowVectorXd m_dB2; //技术指标各子指标对评价集的隶属度
+	vector<CString> m_Lvl1TechNam;                      //第一层工艺指标名
+	vector<vector<CString>> m_Lvl2TechNam;              //第二层工艺指标名
+	RowVectorXd m_dB1; //评价整体对评价集的隶属度
+	RowVectorXd m_dB2; ////技术指标对评价集的隶属度
 	VectorXd m_dC1; //一级指标评分值
 	VectorXd m_dC2; //二级指标评分值
 	double m_W;//最终评分值
+
+	void GetIndexVal(VectorXd& dA1,VectorXd& dA2);                   //获取指标评分
+	double MinVal(vector<double>& IndexVal);                         //取最小扣分
+
+	//结果显示相关
+	vector<CString>& SetResultVal();      //评价结果赋给结果显示类
+	vector<CString> m_ItemVal;            //保存结果显示值
+	vector<CLowValItem> m_LowValItem; //保存低分项及改进意见
+	vector<CIndexValItem> m_IndexVal;   //保存指标得分
+	void SaveResultInfo();          //给m_LowValItem、m_IndexVal赋值
+
 };

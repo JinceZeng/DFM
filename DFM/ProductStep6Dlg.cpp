@@ -13,6 +13,7 @@ IMPLEMENT_DYNAMIC(CProductStep6Dlg, CDialogEx)
 
 CProductStep6Dlg::CProductStep6Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CProductStep6Dlg::IDD, pParent)
+	,m_LowValItemNum(0)
 {
 	m_TechMaturityInfo.clear();
 	m_TechType.clear();
@@ -24,6 +25,7 @@ CProductStep6Dlg::~CProductStep6Dlg()
 	vector<vector<CString>>().swap(m_TechMaturityInfo);
 	vector<CString>().swap(m_TechType);
 	vector<CMaturyChartItem>().swap(m_ListCtrlItem);
+	vector<CLowValItem>().swap(m_LowValItem);
 }
 
 void CProductStep6Dlg::DoDataExchange(CDataExchange* pDX)
@@ -46,6 +48,10 @@ END_MESSAGE_MAP()
 DWORD CProductStep6Dlg::OnWizardActive()
 {
 	//接受信息输入，完成初始化工作
+	m_TechMaturyList.DeleteAllItems();
+	m_ListCtrlItem.clear();
+	m_LowValItem.clear();
+	m_LowValItemNum=0;      //窗口激活就重新计数
 
 	ShowWindow(SW_SHOW);
 	return 0;
@@ -65,8 +71,17 @@ DWORD CProductStep6Dlg::OnWizardNext()
 //可以检验上一步工作不用保存
 DWORD CProductStep6Dlg::OnWizardPrevious()
 {
-	ShowWindow(SW_HIDE);        //暂时这样写，后期加检验判断
-	return 0;
+	if(m_TechMaturyList.m_bEditing==TRUE)
+	{
+		MessageBox(_T("错误:列表控件处于编辑状态"));
+		return -1;
+	}
+	else
+	{
+		//m_bLegal=FALSE;
+		ShowWindow(SW_HIDE);
+		return 0;
+	}
 }
 
 
@@ -114,6 +129,7 @@ LRESULT CProductStep6Dlg::OnDeleteIndexItem(WPARAM wParam,LPARAM lParam)
 	}
 	else
 	{
+		m_ListCtrlItem.pop_back();       //弹出最后一项
 		int n=m_TechMaturyList.GetItemCount();
 		m_TechMaturyList.DeleteItem(n-1);
 		return 0;
@@ -123,6 +139,11 @@ LRESULT CProductStep6Dlg::OnDeleteIndexItem(WPARAM wParam,LPARAM lParam)
 LRESULT CProductStep6Dlg::OnAddIndexItem(WPARAM wParam,LPARAM lParam)
 {
 	int n=m_TechMaturyList.GetItemCount();
+	if (n>0&&m_TechMaturyList.GetItemText(n-1,1)==CString(""))
+	{
+		AfxMessageBox(CString("请先选择工艺再添加！"));
+		return 0;
+	}
 	CString  str1;
 	str1.Format(_T("%d"),n+1);
 	m_TechMaturyList.InsertItem(n,str1);   //填充ID第一项
@@ -132,6 +153,10 @@ LRESULT CProductStep6Dlg::OnAddIndexItem(WPARAM wParam,LPARAM lParam)
 
 	m_TechMaturyList.SetComboString(m_TechType);   //将combo字符赋给listctrl扩展类中的m_strlisCombo用于combo初始化
 
+	//保存到m_ListCtrlItem
+	CMaturyChartItem OneItem;//临时存储每条list的信息
+	OneItem.nItem=str1;
+	m_ListCtrlItem.push_back(OneItem);
 
 	return 0;
 }
@@ -140,6 +165,7 @@ LRESULT CProductStep6Dlg::OnAddIndexItem(WPARAM wParam,LPARAM lParam)
 void CProductStep6Dlg::ReadTechChart()
 {
 	m_TechMaturityInfo.clear();
+	m_TechType.clear();
 	_RecordsetPtr m_pRs;
 	CString sql = CString("select * from TechMaturity");
 	try
@@ -175,11 +201,7 @@ void CProductStep6Dlg::ReadTechChart()
 //对应分值的输入
 LRESULT CProductStep6Dlg::OnSetIndexVal(WPARAM wParam,LPARAM lParam)
 {
-	CMaturyChartItem m_OneItem;//临时存储每条list的信息
-
 	int n=m_TechMaturyList.GetItemCount();
-	CString strItem;
-	strItem.Format(CString("%d"),n);
 
 	CString strValInfo=m_TechMaturyList.GetItemText(wParam,1);
 	for(int i=0; i<n-1;i++)           //进行重复判断
@@ -199,16 +221,40 @@ LRESULT CProductStep6Dlg::OnSetIndexVal(WPARAM wParam,LPARAM lParam)
 	}
 
 	//逐条保存
-	m_OneItem.nItem=strItem;
-	m_OneItem.m_TechNam=strValInfo;
-	m_OneItem.m_TechUseStatus=m_TechMaturityInfo[i][2];
-	m_OneItem.m_TechMaturyVal=m_TechMaturityInfo[i][1];
+	m_ListCtrlItem[n-1].m_TechNam=strValInfo;
+	m_ListCtrlItem[n-1].m_TechUseStatus=m_TechMaturityInfo[i][2];
+	m_ListCtrlItem[n-1].m_TechMaturyVal=m_TechMaturityInfo[i][1];
 
-	m_TechMaturyList.SetItemText(wParam,2,m_OneItem.m_TechUseStatus);                    //设置使用状态
-	m_TechMaturyList.SetItemText(wParam,3,m_OneItem.m_TechMaturyVal);                    //设置分值
-
-	m_ListCtrlItem.push_back(m_OneItem);
+	m_TechMaturyList.SetItemText(wParam,2,m_ListCtrlItem[n-1].m_TechUseStatus);                    //设置使用状态
+	m_TechMaturyList.SetItemText(wParam,3,m_ListCtrlItem[n-1].m_TechMaturyVal);                    //设置分值
 
 	return 0;
 }
 
+//存储低分项(待m_ListCtrlItem赋值完成后调用)
+void CProductStep6Dlg::SaveLowValItem()
+{
+	for (int i=0;i<m_ListCtrlItem.size();++i)
+	{
+		CString strVal=m_ListCtrlItem[i].m_TechMaturyVal;//提取评分
+		CLowValItem OneLowValItem;
+		int nDeductVal= _ttoi(strVal)-3;
+		CString strDeductVal;
+		strDeductVal.Format(CString("%d"),nDeductVal);
+		if (nDeductVal<0)
+		{
+			CString str;
+			str.Format(CString("%d"),m_LowValItemNum+1);
+			OneLowValItem.m_Item=str;
+			OneLowValItem.m_ChartNam=CString("工艺成熟度表");
+			OneLowValItem.m_Classify=CString("工艺");
+			OneLowValItem.m_TechEvalIndex=m_ListCtrlItem[i].m_TechNam;
+			OneLowValItem.m_IndexScore=strDeductVal;
+			OneLowValItem.m_LowValAdvice=CString("不使用该工艺");
+
+			m_LowValItem.push_back(OneLowValItem);
+
+			++m_LowValItemNum;
+		}
+	}
+}

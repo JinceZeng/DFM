@@ -13,6 +13,7 @@ IMPLEMENT_DYNAMIC(CProductStep4Dlg, CDialogEx)
 
 CProductStep4Dlg::CProductStep4Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CProductStep4Dlg::IDD, pParent)
+	,m_LowValItemNum(0)
 {
 	m_ListCtrlItem.clear();
 	m_Lvl3TechID.clear();
@@ -24,6 +25,7 @@ CProductStep4Dlg::~CProductStep4Dlg()
 	vector<CString>().swap(m_Lvl3TechID);
 	vector<CTechChartItem>().swap(m_ListCtrlItem);
 	vector<vector<CString>>().swap(m_IndexValInfo);
+	vector<CLowValItem>().swap(m_LowValItem);
 }
 
 void CProductStep4Dlg::DoDataExchange(CDataExchange* pDX)
@@ -80,7 +82,8 @@ BOOL CProductStep4Dlg::OnInitDialog()
 DWORD CProductStep4Dlg::OnWizardActive()
 {
 	//接受信息输入，完成初始化工作
-
+	m_LowValItem.clear();
+	m_LowValItemNum=0;      //窗口激活就重新计数
 	ShowWindow(SW_SHOW);
 	return 0;
 }
@@ -89,6 +92,17 @@ DWORD CProductStep4Dlg::OnWizardActive()
 //可以检验并保存当前工作,返回-1不切换，返回0切换
 DWORD CProductStep4Dlg::OnWizardNext()
 {
+	//保存当前工作，传递信息
+	for (int i=0;i<m_ListCtrlItem.size();++i)
+	{
+		CString str=m_ThreeProValList.GetItemText(i,3);
+		if(str==CString(""))
+		{
+			AfxMessageBox(CString("评分项未完成"));
+			return -1;
+		}
+	}
+	SaveLowValItem(m_ListCtrlItem);   //若m_ListCtrlItem信息输入完成，则存储其中低分项
 
 	ShowWindow(SW_HIDE);     //暂时这样写，后期加检验判断
 	return 0;
@@ -99,8 +113,17 @@ DWORD CProductStep4Dlg::OnWizardNext()
 //可以检验上一步工作不用保存
 DWORD CProductStep4Dlg::OnWizardPrevious()
 {
-	ShowWindow(SW_HIDE);        //暂时这样写，后期加检验判断
-	return 0;
+	if(m_ThreeProValList.m_bEditing==TRUE)
+	{
+		MessageBox(_T("错误:列表控件处于编辑状态"));
+		return -1;
+	}
+	else
+	{
+		//m_bLegal=FALSE;
+		ShowWindow(SW_HIDE);
+		return 0;
+	}
 }
 
 
@@ -219,24 +242,93 @@ LRESULT CProductStep4Dlg::OnSetIndexVal(WPARAM wParam,LPARAM lParam)
 	//对应分值的输入
 	CString strValInfo=m_ThreeProValList.GetItemText(wParam,3);
 
-	CStringArray strArray;
+	CStringArray strArrayNam,strArrayVal;
 	//提取指标变量描述
 	for (int i=0;i<m_IndexValInfo[wParam].size();++i)
 	{
-		strArray.Add(m_IndexValInfo[wParam][i].Left(m_IndexValInfo[wParam][i].Find(':')));
+		strArrayNam.Add(m_IndexValInfo[wParam][i].Left(m_IndexValInfo[wParam][i].Find(':')));
+		strArrayVal.Add(m_IndexValInfo[wParam][i].Right(m_IndexValInfo[wParam][i].GetLength()-m_IndexValInfo[wParam][i].Find(':')-1));//提取指标评分项评分
+
 	}
 
 	//进行匹配选取对应评分
 	int j=0;
-	for (;j<strArray.GetCount();++j)
+	for (;j<strArrayNam.GetCount();++j)
 	{
-		if(strArray[j]==strValInfo) break;
+		if(strArrayNam[j]==strValInfo) break;
 	}
-	CString strDeductVal=m_IndexValInfo[wParam][j].Right(m_IndexValInfo[wParam][j].GetLength()-m_IndexValInfo[wParam][j].Find(':')-1);//提取评分
-	m_ThreeProValList.SetItemText(wParam,4,strDeductVal);                    //设置分值
+	CString strDeductVal=strArrayVal[j];                                //提取评分
+	m_ThreeProValList.SetItemText(wParam,4,strDeductVal);               //设置分值
 
 	m_ListCtrlItem[wParam].m_ComboStrChoose=strValInfo;                  //存储所选的评分项	
 	m_ListCtrlItem[wParam].m_IndexScore=strDeductVal;                    //存储分值，用于后期模糊综合分析
 
+	/////////////保存低分项,用于结果显示
+	CLowValItem OneLowValItem;
+	int nDeductVal= _ttoi(strDeductVal);
+	if (nDeductVal<0)
+	{
+		CString str;
+		str.Format(CString("%d"),m_LowValItemNum+1);
+		OneLowValItem.m_Item=str;
+		OneLowValItem.m_ChartNam=CString("三防适应性表");
+		OneLowValItem.m_Classify=m_ListCtrlItem[wParam].m_Classify;
+		OneLowValItem.m_TechEvalIndex=m_ListCtrlItem[wParam].m_TechEvalIndex;
+		OneLowValItem.m_IndexScore=m_ListCtrlItem[wParam].m_IndexScore;
+
+		int k=0;      //获取评分项评分为0，即不扣分的项作为建议
+		for (;k<strArrayVal.GetCount();++k)
+		{
+			if(strArrayVal[k]==CString("0")) break;
+		}
+		OneLowValItem.m_LowValAdvice=strArrayNam[k];
+
+		m_LowValItem.push_back(OneLowValItem);
+
+		++m_LowValItemNum;
+	}
+
 	return 0;
+}
+
+
+
+//存储低分项(待m_ListCtrlItem赋值完成后调用)
+void CProductStep4Dlg::SaveLowValItem(vector<CTechChartItem>& m_ListCtrlItem)
+{
+	for (int i=0;i<m_ListCtrlItem.size();++i)
+	{
+		CString strDeductVal=m_ListCtrlItem[i].m_IndexScore;//提取评分
+		CLowValItem OneLowValItem;
+		int nDeductVal= _ttoi(strDeductVal);
+		if (nDeductVal<0)
+		{
+			CString str;
+			str.Format(CString("%d"),m_LowValItemNum+1);
+			OneLowValItem.m_Item=str;
+			OneLowValItem.m_ChartNam=CString("三防适应性表");
+			OneLowValItem.m_Classify=m_ListCtrlItem[i].m_Classify;
+			OneLowValItem.m_TechEvalIndex=m_ListCtrlItem[i].m_TechEvalIndex;
+			OneLowValItem.m_IndexScore=m_ListCtrlItem[i].m_IndexScore;
+
+
+			CStringArray strArrayNam,strArrayVal;
+			for (int j=0;j<m_IndexValInfo[i].size();++j)
+			{
+				strArrayNam.Add(m_IndexValInfo[i][j].Left(m_IndexValInfo[i][j].Find(':')));   //提取指标评分项名
+				strArrayVal.Add(m_IndexValInfo[i][j].Right(m_IndexValInfo[i][j].GetLength()-m_IndexValInfo[i][j].Find(':')-1));//提取指标评分项评分
+			}
+
+			int k=0;      //获取评分项评分为0，即不扣分的项作为建议
+			for (;k<strArrayVal.GetCount();++k)
+			{
+				if(strArrayVal[k]==CString("0")) break;
+			}
+			OneLowValItem.m_LowValAdvice=strArrayNam[k];
+
+			m_LowValItem.push_back(OneLowValItem);
+
+			++m_LowValItemNum;
+		}
+	}
 }

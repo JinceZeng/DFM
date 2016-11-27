@@ -35,6 +35,11 @@ public:
 	vector<vector<CString>> m_IndexValInfo;    //存储指标评分的相关信息，用于之后匹配（依次访问数据库会引起堆栈崩溃） 
 	vector<CTechChartItem> m_ListCtrlItem;     //存储List条目
 
+	vector<CLowValItem> m_LowValItem;          //存储低分项
+	int m_LowValItemNum;                     //记录低分项条目数
+	void SaveLowValItem(vector<CTechChartItem>& m_ListCtrlItem);   //保存低分项
+
+
 	void ReadTechChart(CProductInfo &m_ProductInfo);              //读取工艺表
 	void ShowListCtrl();                                          //显示评分表                   
 	void SetListItem(vector<CTechChartItem> &m_ListCtrlItem);     //设置list条目
