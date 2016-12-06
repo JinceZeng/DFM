@@ -13,6 +13,7 @@ IMPLEMENT_DYNAMIC(CSetWeighDlg, CDialogEx)
 
 CSetWeighDlg::CSetWeighDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CSetWeighDlg::IDD, pParent)
+	,m_bdA(false)//默认未通过一致性检验
 {
 }
 
@@ -65,7 +66,7 @@ BOOL CSetWeighDlg::OnInitDialog()
 	vector<int>().swap(nNoEdit);        //释放vector
 
 	vector<int> nComboLis;
-	nComboLis.push_back(3);            //第三列有组合框控制
+	nComboLis.push_back(3);             //第三列有组合框控制
 	m_SetWeighList.SetnComboList(nComboLis);
 	vector<int>().swap(nComboLis);//释放vector
 
@@ -135,16 +136,33 @@ void CSetWeighDlg::ReadTechChart(CProductInfo &m_ProductInfo)
 
 void CSetWeighDlg::SetListItem(vector<CString>& m_Lvl1TechNam,vector<vector<CString>>& m_Lvl2TechNam)
 {
-	vector<CString> m_WeighComboStr;
-	m_WeighComboStr.push_back(CString("同等重要"));
-	m_WeighComboStr.push_back(CString("稍重要"));
-	m_WeighComboStr.push_back(CString("明显重要"));
-	m_WeighComboStr.push_back(CString("强烈重要"));
-	m_WeighComboStr.push_back(CString("极端重要"));
-	m_WeighComboStr.push_back(CString("稍不重要"));
-	m_WeighComboStr.push_back(CString("明显不重要"));
-	m_WeighComboStr.push_back(CString("强烈不重要"));
-	m_WeighComboStr.push_back(CString("极端不重要"));
+	vector<CString> WeighComboStr;//初始化combostr
+	WeighComboStr.push_back(CString("同等重要"));
+	WeighComboStr.push_back(CString("稍重要"));
+	WeighComboStr.push_back(CString("明显重要"));
+	WeighComboStr.push_back(CString("强烈重要"));
+	WeighComboStr.push_back(CString("极端重要"));
+	WeighComboStr.push_back(CString("稍不重要"));
+	WeighComboStr.push_back(CString("明显不重要"));
+	WeighComboStr.push_back(CString("强烈不重要"));
+	WeighComboStr.push_back(CString("极端不重要"));
+
+	vector<CString> WeighInit; //初始化list中权重值
+	WeighInit.push_back(CString("稍重要"));
+	WeighInit.push_back(CString("稍不重要"));
+	WeighInit.push_back(CString("稍不重要"));
+	WeighInit.push_back(CString("稍不重要"));
+	WeighInit.push_back(CString("稍不重要"));
+	WeighInit.push_back(CString("稍重要"));
+	WeighInit.push_back(CString("稍重要"));
+	WeighInit.push_back(CString("同等重要"));
+	WeighInit.push_back(CString("同等重要"));
+	WeighInit.push_back(CString("稍不重要"));
+	WeighInit.push_back(CString("稍不重要"));
+
+
+
+
 
 	int n=0;//记录list条目
 	for (int i=0;i<m_Lvl1TechNam.size();++i)//设置一级指标权重设置
@@ -157,7 +175,8 @@ void CSetWeighDlg::SetListItem(vector<CString>& m_Lvl1TechNam,vector<vector<CStr
 			m_SetWeighList.InsertItem(n,strItem1);
 			m_SetWeighList.SetItemText(n,1,m_Lvl1TechNam[i]);
 			m_SetWeighList.SetItemText(n,2,m_Lvl1TechNam[j+1]);
-			m_SetWeighList.SetComboString(m_WeighComboStr);
+			m_SetWeighList.SetItemText(n,3,WeighInit[n]);
+			m_SetWeighList.SetComboString(WeighComboStr);
 			++n;
 		}
 		for (int k=0;k<m_Lvl2TechNam[i].size();++k)
@@ -169,15 +188,24 @@ void CSetWeighDlg::SetListItem(vector<CString>& m_Lvl1TechNam,vector<vector<CStr
 				m_SetWeighList.InsertItem(n,strItem2);
 				m_SetWeighList.SetItemText(n,1,m_Lvl2TechNam[i][k]);
 				m_SetWeighList.SetItemText(n,2,m_Lvl2TechNam[i][l+1]);
-				m_SetWeighList.SetComboString(m_WeighComboStr);
+				m_SetWeighList.SetItemText(n,3,WeighInit[n]);
+				m_SetWeighList.SetComboString(WeighComboStr);
 				++n;
 			}
 		}
      }
+	vector<CString>().swap(WeighComboStr);
+	vector<CString>().swap(WeighInit);
+
 }
 
 void CSetWeighDlg::OnBnClickedOk()
 {
+	if (m_SetWeighList.m_bEditing==TRUE)
+	{
+		AfxMessageBox(CString("错误:列表控件处于编辑状态"));
+		return;
+	}
 	m_WeighCompareInfo.clear(); //进来时清空
 	// TODO: Add your control notification handler code here
 	for (int i=0;i<m_SetWeighList.GetItemCount();++i)
@@ -191,7 +219,13 @@ void CSetWeighDlg::OnBnClickedOk()
 		else m_WeighCompareInfo.push_back(str);
 	}
 	ConstructCompareMat(m_WeighCompareInfo);
-	if(m_dA1.sum()!=1.0||m_dA2.sum()!=1.0)//未进行过归一化即一致性检测不通过
+	//double d1=0.0,d2=0.0;
+	//d1=m_dA1.sum();             //此处求和后无法赋值
+	//d2=m_dA2.sum();
+	//TRACE(_T("Item=%f\n"), d1);
+	//TRACE(_T("Item=%f\n"), d2);
+
+	if(m_bdA)//未进行过归一化即一致性检测不通过
 	{
 		AfxMessageBox(CString("一致性检查未通过！请重新比较指标！"));
 		return;
@@ -257,6 +291,10 @@ void CSetWeighDlg::ConstructCompareMat(vector<CString>& m_WeighCompareInfo)
 
 	m_dA1=ComputeWeigh(M_S1);
 	m_dA2=ComputeWeigh(M_S2);
+	if(m_dA1.sum()==1.0&&m_dA2.sum()==1.0)//复制后就应该调用，release模式下自动优化，减少内存消耗
+	{
+		m_bdA=true;
+	}
 }
 
 
@@ -291,7 +329,20 @@ VectorXd CSetWeighDlg::ComputeWeigh(MatrixXd& M_S)
 	double dCI=(dMax-n)/(n-1);
 	double dCR=dCI/dRI[n-1];
 	if(dCR<0.1||n<3)
-		return dV/=dV.sum();//归一化
+	{
+		VectorXd tempdV(cdV.size());//release下dV重新赋值会会引起内存分配问题，这里取临时变量暂存
+		//double dSum=0.0;
+		//for (int i=0;i<dV.size();++i)
+		//{
+		//	dSum+=dV[i];
+		//}
+		//for (int i=0;i<dV.size();++i)
+		//{
+		//	dV[i]=dV[i]/dSum;
+		//}
+		tempdV=dV/dV.sum();
+		return tempdV;//归一化，，，不能返回临时变量的引用
+	}
 	else
 		return dV;
 

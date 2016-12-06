@@ -101,8 +101,8 @@ DWORD CProductStep1Dlg::OnWizardActive()
 
 	//ReadTechChart();
 	//ShowListCtrl(m_Lvl4TechID);
-	m_LowValItem.clear();
-	m_LowValItemNum=0;      //窗口激活就重新计数
+	//m_LowValItem.clear();
+	//m_LowValItemNum=0;      //窗口激活就重新计数  (//////不能写在这里，上一步也会调用清空)
 	ShowWindow(SW_SHOW);
 	return 0;
 }
@@ -110,16 +110,16 @@ DWORD CProductStep1Dlg::OnWizardActive()
 //可以检验并保存当前工作
 DWORD CProductStep1Dlg::OnWizardNext()
 {
-	//保存当前工作，传递信息
-	for (int i=0;i<m_ListCtrlItem.size();++i)
-	{
-		CString str=m_TechValList.GetItemText(i,3);
-		if(str==CString(""))
-		{
-			AfxMessageBox(CString("评分项未完成"));
-			return -1;
-		}
-	}
+	////保存当前工作，传递信息
+	//for (int i=0;i<m_ListCtrlItem.size();++i)
+	//{
+	//	CString str=m_TechValList.GetItemText(i,3);
+	//	if(str==CString(""))
+	//	{
+	//		AfxMessageBox(CString("评分项未完成"));
+	//		return -1;
+	//	}
+	//}
 	SaveLowValItem(m_ListCtrlItem);   //若m_ListCtrlItem信息输入完成，则存储其中低分项
 	ShowWindow(SW_HIDE);
 	return 0;

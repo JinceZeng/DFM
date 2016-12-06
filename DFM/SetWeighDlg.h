@@ -40,5 +40,7 @@ public:
 	//计算相关
 	void ConstructCompareMat(vector<CString>& m_WeighCompareInfo);//构建权重比较判断矩阵
 	VectorXd ComputeWeigh(MatrixXd& M_S);   //层次分析法计算权重值
+	bool IsCoherence(VectorXd& dA);         //判断一致性
 	VectorXd m_dA1,m_dA2;//存储层次分析法权重向量
+	bool m_bdA;  //判断是否通过一致性检验
 };

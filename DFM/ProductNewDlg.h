@@ -78,10 +78,10 @@ public:
 	double MinVal(vector<double>& IndexVal);                         //取最小扣分
 
 	//结果显示相关
-	vector<CString>& SetResultVal();      //评价结果赋给结果显示类
+	vector<CString>& SetResultVal(vector<CString>& m_ItemVal);      //评价结果赋给结果显示类
 	vector<CString> m_ItemVal;            //保存结果显示值
 	vector<CLowValItem> m_LowValItem; //保存低分项及改进意见
 	vector<CIndexValItem> m_IndexVal;   //保存指标得分
-	void SaveResultInfo();          //给m_LowValItem、m_IndexVal赋值
+	void SaveResultInfo(vector<CLowValItem>& m_LowValItem,vector<CIndexValItem>& m_IndexVal);          //给m_LowValItem、m_IndexVal赋值
 
 };

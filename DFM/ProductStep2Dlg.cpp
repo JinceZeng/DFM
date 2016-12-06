@@ -81,9 +81,9 @@ BOOL CProductStep2Dlg::OnInitDialog()
 DWORD CProductStep2Dlg::OnWizardActive()
 {
 	//接受信息输入，完成初始化工作
-	m_MatInfoList.DeleteAllItems();
-	m_LowValItem.clear();
-	m_LowValItemNum=0;
+	//m_MatInfoList.DeleteAllItems();
+	//m_LowValItem.clear();
+	//m_LowValItemNum=0;
 	ShowWindow(SW_SHOW);
 	return 0;
 }
@@ -92,11 +92,11 @@ DWORD CProductStep2Dlg::OnWizardActive()
 //可以检验并保存当前工作,返回-1不切换，返回0切换
 DWORD CProductStep2Dlg::OnWizardNext()
 {
-	if (m_MatInfoList.GetItemCount()==0)
-	{
-		AfxMessageBox(CString("导入材料表未完成"));
-		return -1;
-	}
+	//if (m_MatInfoList.GetItemCount()==0)
+	//{
+	//	AfxMessageBox(CString("导入材料表未完成"));
+	//	return -1;
+	//}
 	ShowWindow(SW_HIDE);     //暂时这样写，后期加检验判断
 	return 0;
 

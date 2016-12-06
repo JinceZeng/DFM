@@ -79,11 +79,11 @@ END_MESSAGE_MAP()
 
 
 //控件大小位置变化(暂未使用此功能)
-BEGIN_EASYSIZE_MAP(CDFMDlg, CDialogEx) 
-	EASYSIZE(IDC_MODELNEW,ES_BORDER,ES_BORDER,IDC_EVALRESULT,ES_KEEPSIZE,ES_HCENTER) //此处根据自己需求 
-	EASYSIZE(IDC_EVALRESULT,IDC_MODELNEW,ES_BORDER,ES_BORDER,ES_KEEPSIZE,ES_HCENTER)
-	EASYSIZE(IDC_LIST_PRODUCTINFO,ES_BORDER,ES_BORDER,ES_BORDER,ES_BORDER,0)
-END_EASYSIZE_MAP 
+//BEGIN_EASYSIZE_MAP(CDFMDlg, CDialogEx) 
+//	EASYSIZE(IDC_MODELNEW,ES_BORDER,ES_BORDER,IDC_EVALRESULT,ES_KEEPSIZE,ES_HCENTER) //此处根据自己需求 
+//	EASYSIZE(IDC_EVALRESULT,IDC_MODELNEW,ES_BORDER,ES_BORDER,ES_KEEPSIZE,ES_HCENTER)
+//	EASYSIZE(IDC_LIST_PRODUCTINFO,ES_BORDER,ES_BORDER,ES_BORDER,ES_BORDER,0)
+//END_EASYSIZE_MAP 
 
 // CDFMDlg 消息处理程序
 
@@ -192,8 +192,8 @@ BOOL CDFMDlg::OnInitDialog()
 	m_ProductInfoList.InsertColumn(7,_T("评价人"),LVCFMT_CENTER,width1/8);
 	m_ProductInfoList.InsertColumn(8,_T("评价时间"),LVCFMT_CENTER,width1/8);
 
-
-	INIT_EASYSIZE;
+	OnMenuLogin();
+	//INIT_EASYSIZE;
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -272,7 +272,7 @@ void CDFMDlg::OnSize(UINT nType, int cx, int cy)
 
 	}
 
-	UPDATE_EASYSIZE;
+	//UPDATE_EASYSIZE;
 
 }
 
@@ -306,7 +306,7 @@ void CDFMDlg::UpdateListCtrl()
 	while (!m_pRs1->adoEOF)
 	{
 		CString str0;
-		str0.Format(CString("%d"),n); //int转cstring
+		str0.Format(CString("%d"),n+1); //int转cstring
 		CString str8 = (m_pRs1->GetCollect("ProductID"));       //数据库中int型数据获取后不能加cstring强制转换
 		CString str1 = (CString)(m_pRs1->GetCollect("ProductNam"));
 		CString str2 = (CString)(m_pRs1->GetCollect("ProductNum"));

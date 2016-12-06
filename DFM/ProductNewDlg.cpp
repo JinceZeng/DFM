@@ -311,9 +311,9 @@ void CProductNewDlg::OnBnClickedEvalin()
 			m_Lvl2TechNam=dlg.m_Lvl2TechNam;
 
 			//结果输出
-			SaveResultInfo();    //给m_LowValItem、m_IndexVal赋值
+			SaveResultInfo(m_LowValItem,m_IndexVal);    //给m_LowValItem、m_IndexVal赋值
 			CProductOutDlg dlg1;
-			dlg1.GetItemInfo(SetResultVal());
+			dlg1.GetItemInfo(SetResultVal(m_ItemVal));
 			dlg1.GetResultInfo(m_LowValItem,m_IndexVal);
 			dlg1.DoModal();
 		}
@@ -380,13 +380,20 @@ void CProductNewDlg::ShowPage(UINT nPos)
 			//((CProductStep1Dlg*)m_pPageList[nPos])->m_TechValList.DeleteAllItems();
 			((CProductStep1Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[0])->m_ProductInfo);
 			((CProductStep1Dlg*)m_pPageList[nPos])->ShowListCtrl();
+
+			((CProductStep1Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
+			((CProductStep1Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
+
 			((CProductStep1Dlg*)m_pPageList[nPos])->OnWizardActive();
 
 			break;
 		case 1:
 			if(((CProductStep1Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)
 				return;
-			//((CDlgStep2*)m_pPageList[nPos])->GetInfoFromPrevPage(((CDlgStep1*)m_pPageList[m_nCurrentPage])->m_AsistStore);  //传递信息
+			((CProductStep2Dlg*)m_pPageList[nPos])->m_MatInfoList.DeleteAllItems();
+			((CProductStep2Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
+			((CProductStep2Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
+
 			((CProductStep2Dlg*)m_pPageList[nPos])->OnWizardActive();
 			break;
 		case 2:
@@ -395,6 +402,9 @@ void CProductNewDlg::ShowPage(UINT nPos)
 			//((CProductStep3Dlg*)m_pPageList[nPos])->m_ImpactVibValList.DeleteAllItems();
 			((CProductStep3Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[0])->m_ProductInfo);
 			((CProductStep3Dlg*)m_pPageList[nPos])->ShowListCtrl();
+
+			((CProductStep3Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
+			((CProductStep3Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
 			((CProductStep3Dlg*)m_pPageList[nPos])->OnWizardActive();
 			break;
 		case 3:
@@ -403,6 +413,9 @@ void CProductNewDlg::ShowPage(UINT nPos)
 			//((CProductStep4Dlg*)m_pPageList[nPos])->m_ThreeProValList.DeleteAllItems();
 			((CProductStep4Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[0])->m_ProductInfo);
 			((CProductStep4Dlg*)m_pPageList[nPos])->ShowListCtrl();
+
+			((CProductStep4Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
+			((CProductStep4Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
 			((CProductStep4Dlg*)m_pPageList[nPos])->OnWizardActive();
 			break;
 		case 4:
@@ -411,12 +424,22 @@ void CProductNewDlg::ShowPage(UINT nPos)
 			//((CProductStep5Dlg*)m_pPageList[nPos])->m_EconomyList.DeleteAllItems();
 			((CProductStep5Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[0])->m_ProductInfo);
 			((CProductStep5Dlg*)m_pPageList[nPos])->ShowListCtrl();
+
+			((CProductStep5Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
+			((CProductStep5Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
 			((CProductStep5Dlg*)m_pPageList[nPos])->OnWizardActive();
 			break;
 		case 5:
 			if(((CProductStep5Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)
 				return;
+			((CProductStep6Dlg*)m_pPageList[nPos])->m_TechMaturyList.DeleteAllItems();
 			((CProductStep6Dlg*)m_pPageList[nPos])->ReadTechChart();
+
+			((CProductStep6Dlg*)m_pPageList[nPos])->m_ListCtrlItem.clear();
+			((CProductStep6Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
+			((CProductStep6Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
+
+
 			((CProductStep6Dlg*)m_pPageList[nPos])->OnWizardActive();
 			break;
 		default:
@@ -679,7 +702,7 @@ double CProductNewDlg::MinVal(vector<double>& IndexVal)
 
 
 /////////////////////////结果输出相关
-vector<CString>& CProductNewDlg::SetResultVal()
+vector<CString>& CProductNewDlg::SetResultVal(vector<CString>& m_ItemVal)
 {
 	//评价最终可制造性
 	m_ItemVal.clear();
@@ -705,7 +728,7 @@ vector<CString>& CProductNewDlg::SetResultVal()
 
 
 //给m_LowValItem、m_IndexVal赋值,用于结果显示
-void CProductNewDlg::SaveResultInfo()
+void CProductNewDlg::SaveResultInfo(vector<CLowValItem>& m_LowValItem,vector<CIndexValItem>& m_IndexVal)
 {
 	//综合保存低分项
 	m_LowValItem.clear();

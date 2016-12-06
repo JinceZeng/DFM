@@ -48,10 +48,10 @@ END_MESSAGE_MAP()
 DWORD CProductStep6Dlg::OnWizardActive()
 {
 	//接受信息输入，完成初始化工作
-	m_TechMaturyList.DeleteAllItems();
-	m_ListCtrlItem.clear();
-	m_LowValItem.clear();
-	m_LowValItemNum=0;      //窗口激活就重新计数
+	//m_TechMaturyList.DeleteAllItems();
+	//m_ListCtrlItem.clear();
+	//m_LowValItem.clear();
+	//m_LowValItemNum=0;      //窗口激活就重新计数
 
 	ShowWindow(SW_SHOW);
 	return 0;
