@@ -327,11 +327,11 @@ LRESULT CTechValListCtrl::OnComboSearch(WPARAM wParam,LPARAM lParam)
 	CString cstr_search;
 	m_ComboBox.GetWindowText(cstr_search);
 
-	//数据初始化开始
-	for (int i = 0; i <m_ComboBox.GetCount(); i++)
+	//数据初始化开始(全部清空)
+	for (int i = m_ComboBox.GetCount() - 1; i >= 0; i--)
 	{
-		m_ComboBox.DeleteString(0);
-	}			
+		m_ComboBox.DeleteString(i);
+	}		
 	//初始化结束
 	if (cstr_search.IsEmpty()){		
 		return 0;

@@ -110,16 +110,21 @@ DWORD CProductStep1Dlg::OnWizardActive()
 //可以检验并保存当前工作
 DWORD CProductStep1Dlg::OnWizardNext()
 {
-	////保存当前工作，传递信息
-	//for (int i=0;i<m_ListCtrlItem.size();++i)
-	//{
-	//	CString str=m_TechValList.GetItemText(i,3);
-	//	if(str==CString(""))
-	//	{
-	//		AfxMessageBox(CString("评分项未完成"));
-	//		return -1;
-	//	}
-	//}
+	//保存当前工作，传递信息
+	if(m_TechValList.m_bEditing==TRUE)
+	{
+		MessageBox(_T("错误:列表控件处于编辑状态"));
+		return -1;
+	}
+	for (int i=0;i<m_ListCtrlItem.size();++i)
+	{
+		CString str=m_TechValList.GetItemText(i,3);
+		if(str==CString(""))
+		{
+			AfxMessageBox(CString("评分项未完成"));
+			return -1;
+		}
+	}
 	SaveLowValItem(m_ListCtrlItem);   //若m_ListCtrlItem信息输入完成，则存储其中低分项
 	ShowWindow(SW_HIDE);
 	return 0;
@@ -467,6 +472,8 @@ LRESULT CProductStep1Dlg::OnIndexMatch(WPARAM wParam,LPARAM lParam)
 //存储低分项(待m_ListCtrlItem赋值完成后调用)
 void CProductStep1Dlg::SaveLowValItem(vector<CTechChartItem>& m_ListCtrlItem)
 {
+	m_LowValItem.clear();
+	m_LowValItemNum=0;
 	for (int i=0;i<m_ListCtrlItem.size();++i)
 	{
 		CString strDeductVal=m_ListCtrlItem[i].m_IndexScore;//提取评分
@@ -489,13 +496,21 @@ void CProductStep1Dlg::SaveLowValItem(vector<CTechChartItem>& m_ListCtrlItem)
 				strArrayNam.Add(m_IndexValInfo[i][j].Left(m_IndexValInfo[i][j].Find(':')));   //提取指标评分项名
 				strArrayVal.Add(m_IndexValInfo[i][j].Right(m_IndexValInfo[i][j].GetLength()-m_IndexValInfo[i][j].Find(':')-1));//提取指标评分项评分
 			}
+		
 
-			int k=0;      //获取评分项评分为0，即不扣分的项作为建议
-			for (;k<strArrayVal.GetCount();++k)
+			if (OneLowValItem.m_Classify==CString("机箱（匹配）"))    //匹配项的低分项建议另行设置
 			{
-				if(strArrayVal[k]==CString("0")) break;
+				OneLowValItem.m_LowValAdvice=CString("匹配");
 			}
-			OneLowValItem.m_LowValAdvice=strArrayNam[k];
+			else                                                      //一般低分项建议设置
+			{
+				int k=0;      //获取评分项评分为0，即不扣分的项作为建议
+				for (;k<strArrayVal.GetCount();++k)
+				{
+					if(strArrayVal[k]==CString("0")) break;
+				}
+				OneLowValItem.m_LowValAdvice=strArrayNam[k];
+			}
 
 			m_LowValItem.push_back(OneLowValItem);
 

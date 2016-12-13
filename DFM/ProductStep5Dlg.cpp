@@ -56,16 +56,21 @@ DWORD CProductStep5Dlg::OnWizardActive()
 //可以检验并保存当前工作,返回-1不切换，返回0切换
 DWORD CProductStep5Dlg::OnWizardNext()
 {
-	////保存当前工作，传递信息
-	//for (int i=0;i<m_ListCtrlItem.size();++i)
-	//{
-	//	CString str=m_EconomyList.GetItemText(i,3);
-	//	if(str==CString(""))
-	//	{
-	//		AfxMessageBox(CString("评分项未完成"));
-	//		return -1;
-	//	}
-	//}
+	//保存当前工作，传递信息
+	if(m_EconomyList.m_bEditing==TRUE)
+	{
+		MessageBox(_T("错误:列表控件处于编辑状态"));
+		return -1;
+	}
+	for (int i=0;i<m_ListCtrlItem.size();++i)
+	{
+		CString str=m_EconomyList.GetItemText(i,3);
+		if(str==CString(""))
+		{
+			AfxMessageBox(CString("评分项未完成"));
+			return -1;
+		}
+	}
 	SaveLowValItem(m_ListCtrlItem);   //若m_ListCtrlItem信息输入完成，则存储其中低分项
 
 	ShowWindow(SW_HIDE);     //暂时这样写，后期加检验判断
@@ -269,6 +274,8 @@ LRESULT CProductStep5Dlg::OnSetIndexVal(WPARAM wParam,LPARAM lParam)
 //存储低分项(待m_ListCtrlItem赋值完成后调用)
 void CProductStep5Dlg::SaveLowValItem(vector<CTechChartItem>& m_ListCtrlItem)
 {
+	m_LowValItem.clear();
+	m_LowValItemNum=0;
 	for (int i=0;i<m_ListCtrlItem.size();++i)
 	{
 		CString strDeductVal=m_ListCtrlItem[i].m_IndexScore;//提取评分

@@ -16,6 +16,7 @@ CLoginDlg::CLoginDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CLoginDlg::IDD, pParent)
 	, m_Uname(_T(""))
 	, m_Upassword(_T(""))
+	,i(0)
 {
 
 }

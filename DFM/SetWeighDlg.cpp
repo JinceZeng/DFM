@@ -13,7 +13,6 @@ IMPLEMENT_DYNAMIC(CSetWeighDlg, CDialogEx)
 
 CSetWeighDlg::CSetWeighDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CSetWeighDlg::IDD, pParent)
-	,m_bdA(false)//默认未通过一致性检验
 {
 }
 
@@ -225,7 +224,12 @@ void CSetWeighDlg::OnBnClickedOk()
 	//TRACE(_T("Item=%f\n"), d1);
 	//TRACE(_T("Item=%f\n"), d2);
 
-	if(m_bdA)//未进行过归一化即一致性检测不通过
+	int nSum=0;
+	for (int i=0;i<m_vnCoherence.size();++i)
+	{
+		nSum+=m_vnCoherence[i];
+	}
+	if(nSum!=m_vnCoherence.size())//一致性检测不通过
 	{
 		AfxMessageBox(CString("一致性检查未通过！请重新比较指标！"));
 		return;
@@ -289,18 +293,17 @@ void CSetWeighDlg::ConstructCompareMat(vector<CString>& m_WeighCompareInfo)
 		}
 	}
 
-	m_dA1=ComputeWeigh(M_S1);
-	m_dA2=ComputeWeigh(M_S2);
-	if(m_dA1.sum()==1.0&&m_dA2.sum()==1.0)//复制后就应该调用，release模式下自动优化，减少内存消耗
-	{
-		m_bdA=true;
-	}
+	ComputeWeigh(M_S1);
+	ComputeWeigh(M_S2);
+
+	m_dA1=m_dA[0];
+	m_dA2=m_dA[1];
 }
 
 
 
 
-VectorXd CSetWeighDlg::ComputeWeigh(MatrixXd& M_S)
+void CSetWeighDlg::ComputeWeigh(MatrixXd& M_S)
 {
 	EigenSolver<MatrixXd> es(M_S);
 	complex<double> cdMax=0.0;
@@ -317,35 +320,26 @@ VectorXd CSetWeighDlg::ComputeWeigh(MatrixXd& M_S)
 
 	//最大特征值为实数，可把特征向量化为实数向量
 	double dMax=cdMax.real();
+	//m_vdMaxA.push_back(dMax);
 	VectorXd dV(cdV.size());
 	for (int i=0;i<cdV.size();++i)
 	{
 		dV[i]=cdV[i].real();
 	}
 
-	//判断一致
+	//判断一致m_dA1
 	int n=dV.size();
 	double dRI[15]={0,0,0.52,0.89,1.12,1.26,1.36,1.41,1.46,1.49,1.52,1.54,1.56,1.58,1.59};
 	double dCI=(dMax-n)/(n-1);
 	double dCR=dCI/dRI[n-1];
 	if(dCR<0.1||n<3)
 	{
-		VectorXd tempdV(cdV.size());//release下dV重新赋值会会引起内存分配问题，这里取临时变量暂存
-		//double dSum=0.0;
-		//for (int i=0;i<dV.size();++i)
-		//{
-		//	dSum+=dV[i];
-		//}
-		//for (int i=0;i<dV.size();++i)
-		//{
-		//	dV[i]=dV[i]/dSum;
-		//}
-		tempdV=dV/dV.sum();
-		return tempdV;//归一化，，，不能返回临时变量的引用
+		//VectorXd tempdV(m_dA1.size());//release下dV重新赋值会会引起内存分配问题，这里取临时变量暂存
+		dV/=dV.sum();
+		m_vnCoherence.push_back(1);
 	}
 	else
-		return dV;
-
-	
+		m_vnCoherence.push_back(0);
+	m_dA.push_back(dV);
 }
 

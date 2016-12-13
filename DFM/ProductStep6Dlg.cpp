@@ -62,8 +62,16 @@ DWORD CProductStep6Dlg::OnWizardActive()
 DWORD CProductStep6Dlg::OnWizardNext()
 {
 
-	ShowWindow(SW_HIDE);     //暂时这样写，后期加检验判断
-	return 0;
+	if(m_TechMaturyList.m_bEditing==TRUE)
+	{
+		MessageBox(_T("错误:列表控件处于编辑状态"));
+		return -1;
+	}
+	else
+	{
+		ShowWindow(SW_HIDE);
+		return 0;
+	}
 
 }
 
@@ -234,6 +242,8 @@ LRESULT CProductStep6Dlg::OnSetIndexVal(WPARAM wParam,LPARAM lParam)
 //存储低分项(待m_ListCtrlItem赋值完成后调用)
 void CProductStep6Dlg::SaveLowValItem()
 {
+	m_LowValItem.clear();
+	m_LowValItemNum=0;
 	for (int i=0;i<m_ListCtrlItem.size();++i)
 	{
 		CString strVal=m_ListCtrlItem[i].m_TechMaturyVal;//提取评分

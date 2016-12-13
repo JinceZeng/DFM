@@ -13,6 +13,7 @@ IMPLEMENT_DYNAMIC(CMatchChart3Dlg, CDialogEx)
 
 CMatchChart3Dlg::CMatchChart3Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CMatchChart3Dlg::IDD, pParent)
+	,isMatch(false)
 {
 
 }

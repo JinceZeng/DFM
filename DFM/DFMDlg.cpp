@@ -307,7 +307,7 @@ void CDFMDlg::UpdateListCtrl()
 	{
 		CString str0;
 		str0.Format(CString("%d"),n+1); //int转cstring
-		CString str8 = (m_pRs1->GetCollect("ProductID"));       //数据库中int型数据获取后不能加cstring强制转换
+		CString str8 = (m_pRs1->GetCollect("ProductID"));       //数据库中int型数据获取后可不加cstring强制转换
 		CString str1 = (CString)(m_pRs1->GetCollect("ProductNam"));
 		CString str2 = (CString)(m_pRs1->GetCollect("ProductNum"));
 		CString str3 = (CString)(m_pRs1->GetCollect("ProductSub")); 
@@ -401,7 +401,7 @@ LRESULT CDFMDlg::OnDeleteData(WPARAM wParam,LPARAM lParam)
 	try
 	{
 		m_pRs = theApp.m_pConnect->Execute(_bstr_t(sql), NULL, adCmdText);
-		AfxMessageBox(CString("产品信息删除成功"));
+		AfxMessageBox(CString("产品信息删除成功！"));
 	}
 	catch(_com_error &e)
 	{        

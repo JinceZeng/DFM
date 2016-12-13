@@ -77,14 +77,14 @@ void CMatchChart1Dlg::OnBnClickedOk()
 	CString strArea=(CString)(m_pRs->GetCollect("AdapterArea"));
 	CString strAreaLower=strArea.Left(strArea.Find('-'));
 	CString strAreaTop=strArea.Right(strArea.GetLength()-strArea.Find('-')-1);
-	double intAreaLower=_tstof(strAreaLower);  //cstring转double
-	double intAreaTop=_tstof(strAreaTop);  
+	double dAreaLower=_tstof(strAreaLower);  //cstring转double
+	double dAreaTop=_tstof(strAreaTop);  
 
 	//获取线数要求 
 	CString strNum=(CString)(m_pRs->GetCollect("WireNum"));
 	int intNum = _ttoi(strNum);                //cstring转int 
 
-	if (m_dAdapterArea>intAreaLower&&m_dAdapterArea<intAreaTop&&m_nWireNum==intNum)
+	if (m_dAdapterArea>dAreaLower&&m_dAdapterArea<dAreaTop&&m_nWireNum<=intNum)
 		isMatch=true;
 	else isMatch=false;
 	CDialogEx::OnOK();

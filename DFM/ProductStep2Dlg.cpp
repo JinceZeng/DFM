@@ -92,11 +92,11 @@ DWORD CProductStep2Dlg::OnWizardActive()
 //可以检验并保存当前工作,返回-1不切换，返回0切换
 DWORD CProductStep2Dlg::OnWizardNext()
 {
-	//if (m_MatInfoList.GetItemCount()==0)
-	//{
-	//	AfxMessageBox(CString("导入材料表未完成"));
-	//	return -1;
-	//}
+	if (m_MatInfoList.GetItemCount()==0)
+	{
+		AfxMessageBox(CString("导入材料表未完成"));
+		return -1;
+	}
 	ShowWindow(SW_HIDE);     //暂时这样写，后期加检验判断
 	return 0;
 
@@ -127,8 +127,8 @@ void CProductStep2Dlg::OnBnClickedInputmat()
 			AfxMessageBox(CString("请选择导入文件!"));
 			return;
 		}
+		ReadMatChart(str,0 , false);
 	}
-	ReadMatChart(str,0 , false);
 }
 
 
@@ -290,6 +290,8 @@ void CProductStep2Dlg::MatchMatVal(vector<CMatChartItem>& m_ListCtrlItem)
 //存储低分项
 void CProductStep2Dlg::SaveLowValItem(vector<CMatChartItem>& m_ListCtrlItem)
 {
+	m_LowValItem.clear();
+	m_LowValItemNum=0;
 	for (int i=0;i<m_ListCtrlItem.size();++i)
 	{
 		CString strDeductVal=m_ListCtrlItem[i].m_MatScore;//提取评分

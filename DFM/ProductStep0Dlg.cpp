@@ -18,6 +18,7 @@ CProductStep0Dlg::CProductStep0Dlg(CWnd* pParent /*=NULL*/)
 	, m_ProductNum(_T(""))
 	, m_ProductSub(_T(""))
 	, m_EvalTypeVal(0)
+	, str_EvalType(_T(""))
 	, m_TypeInfo(_T(""))
 	, m_isEval(0)
 {

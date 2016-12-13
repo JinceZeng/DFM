@@ -293,6 +293,11 @@ void CProductNewDlg::OnBnClickedEvalnext()
 void CProductNewDlg::OnBnClickedEvalin()
 {
 	// TODO: Add your control notification handler code here
+	if (((CProductStep6Dlg*)m_pPageList[6])->m_TechMaturyList.m_bEditing==TRUE)
+	{
+		MessageBox(_T("错误:列表控件处于编辑状态"));
+		return;
+	}
 	if(((CProductStep6Dlg*)m_pPageList[6])->m_ListCtrlItem.size()==0)
 	{
 		AfxMessageBox(CString("请添加使用工艺"));
@@ -381,8 +386,8 @@ void CProductNewDlg::ShowPage(UINT nPos)
 			((CProductStep1Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[0])->m_ProductInfo);
 			((CProductStep1Dlg*)m_pPageList[nPos])->ShowListCtrl();
 
-			((CProductStep1Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
-			((CProductStep1Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
+			//((CProductStep1Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
+			//((CProductStep1Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
 
 			((CProductStep1Dlg*)m_pPageList[nPos])->OnWizardActive();
 
@@ -391,8 +396,8 @@ void CProductNewDlg::ShowPage(UINT nPos)
 			if(((CProductStep1Dlg*)m_pPageList[m_nCurrentPage])->OnWizardNext()==-1)
 				return;
 			((CProductStep2Dlg*)m_pPageList[nPos])->m_MatInfoList.DeleteAllItems();
-			((CProductStep2Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
-			((CProductStep2Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
+		    //((CProductStep2Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
+			//((CProductStep2Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
 
 			((CProductStep2Dlg*)m_pPageList[nPos])->OnWizardActive();
 			break;
@@ -403,8 +408,8 @@ void CProductNewDlg::ShowPage(UINT nPos)
 			((CProductStep3Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[0])->m_ProductInfo);
 			((CProductStep3Dlg*)m_pPageList[nPos])->ShowListCtrl();
 
-			((CProductStep3Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
-			((CProductStep3Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
+			//((CProductStep3Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
+			//((CProductStep3Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
 			((CProductStep3Dlg*)m_pPageList[nPos])->OnWizardActive();
 			break;
 		case 3:
@@ -414,8 +419,8 @@ void CProductNewDlg::ShowPage(UINT nPos)
 			((CProductStep4Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[0])->m_ProductInfo);
 			((CProductStep4Dlg*)m_pPageList[nPos])->ShowListCtrl();
 
-			((CProductStep4Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
-			((CProductStep4Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
+			//((CProductStep4Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
+			//((CProductStep4Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
 			((CProductStep4Dlg*)m_pPageList[nPos])->OnWizardActive();
 			break;
 		case 4:
@@ -425,8 +430,8 @@ void CProductNewDlg::ShowPage(UINT nPos)
 			((CProductStep5Dlg*)m_pPageList[nPos])->ReadTechChart(((CProductStep0Dlg*)m_pPageList[0])->m_ProductInfo);
 			((CProductStep5Dlg*)m_pPageList[nPos])->ShowListCtrl();
 
-			((CProductStep5Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
-			((CProductStep5Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
+			//((CProductStep5Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
+			//((CProductStep5Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
 			((CProductStep5Dlg*)m_pPageList[nPos])->OnWizardActive();
 			break;
 		case 5:
@@ -436,8 +441,8 @@ void CProductNewDlg::ShowPage(UINT nPos)
 			((CProductStep6Dlg*)m_pPageList[nPos])->ReadTechChart();
 
 			((CProductStep6Dlg*)m_pPageList[nPos])->m_ListCtrlItem.clear();
-			((CProductStep6Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
-			((CProductStep6Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
+			//((CProductStep6Dlg*)m_pPageList[nPos])->m_LowValItem.clear();  //下一步时，清空下一页面的低分信息数据
+			//((CProductStep6Dlg*)m_pPageList[nPos])->m_LowValItemNum=0;
 
 
 			((CProductStep6Dlg*)m_pPageList[nPos])->OnWizardActive();

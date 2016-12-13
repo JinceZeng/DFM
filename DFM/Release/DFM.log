@@ -1,0 +1,98 @@
+﻿Build started 2016/12/12 20:24:36.
+     1>Project "C:\Users\Jince\Desktop\可制造性评价\DFM\DFM\DFM.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Release\DFM.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         All outputs are up-to-date.
+         d:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\DFM\eigen3.3 /I"C:\Program Files (x86)\Visual Leak Detector\include" /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Release\DFM.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt ProductNewDlg.cpp ProductStep1Dlg.cpp ProductStep2Dlg.cpp ProductStep3Dlg.cpp ProductStep4Dlg.cpp ProductStep5Dlg.cpp ProductStep6Dlg.cpp
+         ProductNewDlg.cpp
+     1>c:\users\jince\desktop\可制造性评价\dfm\dfm\eigen3.3\eigen\src/Core/arch/CUDA/Half.h : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
+     1>ProductNewDlg.cpp(693): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductNewDlg.cpp(738): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductNewDlg.cpp(748): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductNewDlg.cpp(758): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductNewDlg.cpp(768): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductNewDlg.cpp(778): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductNewDlg.cpp(788): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductNewDlg.cpp(801): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductNewDlg.cpp(818): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductNewDlg.cpp(820): warning C4018: '<' : signed/unsigned mismatch
+         ProductStep1Dlg.cpp
+     1>ProductStep1Dlg.cpp(114): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep1Dlg.cpp(203): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep1Dlg.cpp(305): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep1Dlg.cpp(339): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep1Dlg.cpp(472): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep1Dlg.cpp(489): warning C4018: '<' : signed/unsigned mismatch
+         ProductStep2Dlg.cpp
+     1>ProductStep2Dlg.cpp(222): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep2Dlg.cpp(273): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep2Dlg.cpp(275): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep2Dlg.cpp(295): warning C4018: '<' : signed/unsigned mismatch
+         ProductStep3Dlg.cpp
+     1>ProductStep3Dlg.cpp(113): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep3Dlg.cpp(188): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep3Dlg.cpp(249): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep3Dlg.cpp(293): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep3Dlg.cpp(321): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep3Dlg.cpp(338): warning C4018: '<' : signed/unsigned mismatch
+         ProductStep4Dlg.cpp
+     1>ProductStep4Dlg.cpp(96): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep4Dlg.cpp(169): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep4Dlg.cpp(230): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep4Dlg.cpp(247): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep4Dlg.cpp(301): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep4Dlg.cpp(318): warning C4018: '<' : signed/unsigned mismatch
+         ProductStep5Dlg.cpp
+     1>ProductStep5Dlg.cpp(60): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep5Dlg.cpp(167): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep5Dlg.cpp(228): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep5Dlg.cpp(245): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep5Dlg.cpp(274): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep5Dlg.cpp(291): warning C4018: '<' : signed/unsigned mismatch
+         ProductStep6Dlg.cpp
+     1>ProductStep6Dlg.cpp(218): warning C4018: '<' : signed/unsigned mismatch
+     1>ProductStep6Dlg.cpp(239): warning C4018: '<' : signed/unsigned mismatch
+       ResourceCompile:
+         All outputs are up-to-date.
+       Link:
+         d:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Jince\Desktop\可制造性评价\DFM\Release\DFM.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Program Files (x86)\Visual Leak Detector\lib\Win32" /MANIFEST /ManifestFile:"Release\DFM.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Jince\Desktop\可制造性评价\DFM\Release\DFM.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /ENTRY:"wWinMainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Jince\Desktop\可制造性评价\DFM\Release\DFM.lib" /MACHINE:X86 Release\DFM.res
+         Release\BCMenu.obj
+         Release\BtnST.obj
+         Release\ChangePwdDlg.obj
+         Release\ChoosePathDlg.obj
+         Release\DFM.obj
+         Release\DFMDlg.obj
+         Release\IndexInfo1Dlg.obj
+         Release\IndexValChartDlg.obj
+         Release\LoginDlg.obj
+         Release\LowValChartDlg.obj
+         Release\MatchChart1Dlg.obj
+         Release\MatchChart2Dlg.obj
+         Release\MatchChart3Dlg.obj
+         Release\PInfoListCtrl.obj
+         Release\ProductNewDlg.obj
+         Release\ProductOutDlg.obj
+         Release\ProductStep0Dlg.obj
+         Release\ProductStep1Dlg.obj
+         Release\ProductStep2Dlg.obj
+         Release\ProductStep3Dlg.obj
+         Release\ProductStep4Dlg.obj
+         Release\ProductStep5Dlg.obj
+         Release\ProductStep6Dlg.obj
+         Release\SetWeighDlg.obj
+         Release\stdafx.obj
+         Release\TechValListCtrl.obj
+         Generating code
+         Finished generating code
+         DFM.vcxproj -> C:\Users\Jince\Desktop\可制造性评价\DFM\Release\DFM.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\Jince\Desktop\可制造性评价\DFM\Release\DFM.exe;#1" /manifest Release\DFM.exe.intermediate.manifest "d:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\Include\Manifest\dpiaware.manifest"
+       FinalizeBuildStatus:
+         Deleting file "Release\DFM.unsuccessfulbuild".
+         Touching "Release\DFM.lastbuildstate".
+     1>Done Building Project "C:\Users\Jince\Desktop\可制造性评价\DFM\DFM\DFM.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:25.92

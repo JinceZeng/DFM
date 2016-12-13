@@ -18,6 +18,7 @@ CChangePwdDlg::CChangePwdDlg(CWnd* pParent /*=NULL*/)
 	, m_Old(_T(""))
 	, m_Pwd(_T(""))
 	, m_Pwd1(_T(""))
+	,i_limint(0)
 {
 
 }

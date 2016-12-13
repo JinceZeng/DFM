@@ -13,6 +13,7 @@
 IMPLEMENT_DYNAMIC(CPInfoListCtrl, CListCtrl)
 
 CPInfoListCtrl::CPInfoListCtrl()
+:m_nItem(0)
 {
 
 }
